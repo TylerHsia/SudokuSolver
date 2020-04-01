@@ -6,6 +6,7 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
+        //test
         int[][] sudokuInputted =  /*{{0, 0, 0, 0, 9, 0, 0, 0, 0},
                                     {0, 9, 0, 0, 0, 0, 0, 4, 0},
                                     {0, 5, 1, 8, 0, 7, 0, 0, 0},
@@ -38,8 +39,8 @@ public class SudokuSolver1{
                 mySudoku[row][column] = new sudokCell(sudokuInputted[row][column]);
             }
         }                    
-        printBoard(mySudoku, false); //boolean of whether to include candidates
-        printBoard(mySudoku, true);
+        printBoard(mySudoku, true); //boolean of whether to include candidates
+        printBoard(mySudoku, false);
 
         boolean checkerMethodWorks = true;
         for(int i = 0; i < 10; i++){
@@ -49,14 +50,14 @@ public class SudokuSolver1{
             System.out.println("HeHe");
         }
         System.out.println();
-        printBoard(mySudoku, false);
+        printBoard(mySudoku, true);
 
         for(int i = 0; i < 10; i++){
             onlyCandidateLeftRookChecker(mySudoku);
         }
         
         System.out.println();
-        printBoard(mySudoku, true);
+        printBoard(mySudoku, false);
 
         
     }
@@ -254,10 +255,10 @@ public class SudokuSolver1{
         for(int row = 0; row < 9; row++){
             for(int column = 0; column < 9; column++){
                 if(includeCandidates){
-                    System.out.print(mySudoku[row][column].toStringWithCands());
+                    System.out.print(mySudoku[row][column]);
                 }
                 else{
-                    System.out.print(mySudoku[row][column]);
+                    System.out.print(mySudoku[row][column].toStringWithoutCands());
                 }
             }
             System.out.println();
