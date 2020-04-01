@@ -58,7 +58,7 @@ public class sudokCell{
     }
 
     //toString
-    public String toString(){
+    public String toStringWithCands(){
         String toReturn = "";
         if(solved){
             return toReturn + possibles.get(0) + " ";
@@ -68,7 +68,7 @@ public class sudokCell{
         }
     }
 
-    public String toStringWithCands(){
+    public String toString(){
         String toReturn = "";
         if(solved){
             return toReturn + possibles.get(0) + "\t";

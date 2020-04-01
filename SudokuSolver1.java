@@ -6,7 +6,20 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted =   {{0, 0, 7, 0, 0, 0, 6, 3, 0},
+        int[][] sudokuInputted =  /*{{0, 0, 0, 0, 9, 0, 0, 0, 0},
+                                    {0, 9, 0, 0, 0, 0, 0, 4, 0},
+                                    {0, 5, 1, 8, 0, 7, 0, 0, 0},
+
+                                    {0, 8, 7, 9, 0, 0, 0, 2, 0},
+                                    {4, 0, 0, 3, 0, 0, 0, 0, 7},
+                                    {9, 1, 0, 4, 0, 0, 3, 6, 8},
+                                    
+                                    {1, 0, 2, 0, 0, 4, 0, 7, 5},
+                                    {0, 4, 0, 0, 0, 0, 2, 0, 0},
+                                    {7, 0, 0, 0, 5, 0, 0, 8, 0}};*/
+
+
+                                    {{0, 0, 7, 0, 0, 0, 6, 3, 0},
                                     {6, 0, 0, 5, 0, 3, 0, 0, 9},
                                     {8, 0, 0, 0, 7, 0, 0, 0, 0},
                                     {0, 0, 0, 9, 0, 0, 0, 0, 3},
@@ -32,13 +45,18 @@ public class SudokuSolver1{
         for(int i = 0; i < 10; i++){
             checkerMethodWorks = rookChecker(mySudoku);
             boxChecker(mySudoku);
-            onlyCandidateLeftRookChecker(mySudoku);
+            
             System.out.println("HeHe");
         }
         System.out.println();
-        printBoard(mySudoku, true);
-        System.out.println();
         printBoard(mySudoku, false);
+
+        for(int i = 0; i < 10; i++){
+            onlyCandidateLeftRookChecker(mySudoku);
+        }
+        
+        System.out.println();
+        printBoard(mySudoku, true);
 
         
     }
@@ -154,6 +172,8 @@ public class SudokuSolver1{
                 }
                 if(num == 1){
                     mySudoku[index][column].solve(i);
+                    rookChecker(mySudoku);
+                    boxChecker(mySudoku);
                     onlyCandidateLeftRookCheckerWorks = true;
                 }
             }
@@ -178,6 +198,8 @@ public class SudokuSolver1{
                 if(num == 1){
                     mySudoku[row][index].solve(i);
                     onlyCandidateLeftRookCheckerWorks = true;
+                    rookChecker(mySudoku);
+                    boxChecker(mySudoku);
                 }
             }
         }
