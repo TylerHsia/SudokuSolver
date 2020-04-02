@@ -57,8 +57,21 @@ public class sudokCell{
         solved = true;
     }
 
+    //checks two cells for the same possibilities
+    public boolean samePossible(sudokCell other){
+        if(this.possibles.size() != other.possibles.size()){
+            return false;
+        }
+        for(int i = 0; i < this.possibles.size(); i++){
+            if(this.possibles.get(i) != other.possibles.get(i)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     //toString
-    public String toStringWithCands(){
+    public String toStringWithoutCands(){
         String toReturn = "";
         if(solved){
             return toReturn + possibles.get(0) + " ";

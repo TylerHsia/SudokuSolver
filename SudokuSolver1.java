@@ -6,30 +6,7 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
-        //test
-        int[][] sudokuInputted =  /*{{0, 0, 0, 0, 9, 0, 0, 0, 0},
-                                    {0, 9, 0, 0, 0, 0, 0, 4, 0},
-                                    {0, 5, 1, 8, 0, 7, 0, 0, 0},
-
-                                    {0, 8, 7, 9, 0, 0, 0, 2, 0},
-                                    {4, 0, 0, 3, 0, 0, 0, 0, 7},
-                                    {9, 1, 0, 4, 0, 0, 3, 6, 8},
-                                    
-                                    {1, 0, 2, 0, 0, 4, 0, 7, 5},
-                                    {0, 4, 0, 0, 0, 0, 2, 0, 0},
-                                    {7, 0, 0, 0, 5, 0, 0, 8, 0}};*/
-
-
-                                    {{0, 0, 7, 0, 0, 0, 6, 3, 0},
-                                    {6, 0, 0, 5, 0, 3, 0, 0, 9},
-                                    {8, 0, 0, 0, 7, 0, 0, 0, 0},
-                                    {0, 0, 0, 9, 0, 0, 0, 0, 3},
-                                    {0, 0, 0, 0, 0, 0, 8, 5, 4},
-                                    {0, 0, 0, 8, 0, 0, 0, 0, 0},
-                                    {7, 6, 0, 0, 0, 1, 0, 0, 0},
-                                    {5, 0, 0, 0, 0, 7, 0, 0, 6},
-                                    {0, 4, 1, 0, 9, 0, 0, 0, 5}};
-
+        int[][] sudokuInputted = input(4);
 
         sudokCell[][] mySudoku = new sudokCell[9][9];
 
@@ -46,18 +23,22 @@ public class SudokuSolver1{
         for(int i = 0; i < 10; i++){
             checkerMethodWorks = rookChecker(mySudoku);
             boxChecker(mySudoku);
-            
+            onlyCandidateLeftRookChecker(mySudoku);    
+            onlyCandidateLeftBoxChecker(mySudoku);
             System.out.println("HeHe");
+
         }
         System.out.println();
-        printBoard(mySudoku, true);
-
-        for(int i = 0; i < 10; i++){
-            onlyCandidateLeftRookChecker(mySudoku);
-        }
-        
+        printBoard(mySudoku, true);        
         System.out.println();
         printBoard(mySudoku, false);
+        if(solved(mySudoku)){
+            System.out.println("Solved it!");
+        }
+        else{
+            System.out.println("More work to do!");
+        }
+        System.out.println("Num unsolved is " + numUnsolved(mySudoku));
 
         
     }
@@ -86,6 +67,7 @@ public class SudokuSolver1{
                                     printBoard(mySudoku, true);
                                 }
                                 checkerMethodOneWorks = true;
+                                checkerMethodOneWorks = rookChecker(mySudoku);
                             }
                         }
                     }
@@ -104,6 +86,8 @@ public class SudokuSolver1{
                                     printBoard(mySudoku, true);
                                 }
                                 checkerMethodOneWorks = true; 
+                                checkerMethodOneWorks = rookChecker(mySudoku);
+                                checkerMethodOneWorks = boxChecker(mySudoku);
                             }
                         }
                     }     
@@ -141,6 +125,8 @@ public class SudokuSolver1{
                                         printBoard(mySudoku, true);
                                     }
                                     boxCheckerWorks = true; 
+                                    boxCheckerWorks = boxChecker(mySudoku);
+                                    boxCheckerWorks = rookChecker(mySudoku);
                                 }
                             }
                         }
@@ -176,6 +162,7 @@ public class SudokuSolver1{
                     rookChecker(mySudoku);
                     boxChecker(mySudoku);
                     onlyCandidateLeftRookCheckerWorks = true;
+                    onlyCandidateLeftRookCheckerWorks = onlyCandidateLeftBoxChecker(mySudoku);
                 }
             }
         }
@@ -201,15 +188,52 @@ public class SudokuSolver1{
                     onlyCandidateLeftRookCheckerWorks = true;
                     rookChecker(mySudoku);
                     boxChecker(mySudoku);
+                    onlyCandidateLeftRookCheckerWorks = onlyCandidateLeftBoxChecker(mySudoku);
                 }
             }
         }
-        return false;
+        return onlyCandidateLeftRookCheckerWorks;
     }
 
     //check if candidate is only candidate in one spot in a box
     public static boolean onlyCandidateLeftBoxChecker(sudokCell[][] mySudoku){
-        return false;
+        boolean onlyCandidateLeftBoxCheckerWorks = false;
+        //for each box row
+        for(int boxRow = 0; boxRow < 3; boxRow++){
+            //for each box column
+            for(int boxColumn = 0; boxColumn < 3; boxColumn++){
+                //for each integer possible
+                for(int i = 1; i <=9; i++){
+                    int num = 0;
+                    int rowIndex = -1;
+                    int columnIndex = -1;
+                    //for each row in the small box
+                    for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                        //for each column in the small box
+                        for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                            //if the other element is not solved
+                            if(!mySudoku[row2][column2].getSolved()){
+                                //if it contains i
+                                if(mySudoku[row2][column2].contains(i)){
+                                    num++;
+                                    rowIndex = row2;
+                                    columnIndex = column2;
+                                }
+                            }
+                        }
+                    }
+                    //if only one cell in the box has that candidate, solve it 
+                    if(num == 1){
+                        mySudoku[rowIndex][columnIndex].solve(i);
+                        rookChecker(mySudoku);
+                        boxChecker(mySudoku);
+                        onlyCandidateLeftBoxCheckerWorks = true;
+                        onlyCandidateLeftBoxCheckerWorks = onlyCandidateLeftBoxChecker(mySudoku);
+                    }
+                }
+            }            
+        }
+        return onlyCandidateLeftBoxCheckerWorks;
     }
 
     //checks for 2 boxes that have only 2 candidates in a column or row, eliminates those candidates from that column OR row 
@@ -267,14 +291,122 @@ public class SudokuSolver1{
 
     //check if the sudoku is solved
     public static boolean solved(sudokCell[][] mySudoku){
+        //two for loops to go through each row, check adds to 45
         for(int row = 0; row < 9; row++){
+            int numTotal = 0;
             for(int column = 0; column < 9; column++){
-                if(!mySudoku[row][column].getSolved()){
+                numTotal += mySudoku[row][column].getVal();
+            }
+            if(numTotal != 45){
+                return false;
+            }
+        }
+        System.out.println("Rows add up");        
+        //two for loops to go through each column, check adds to 45
+        for(int column = 0; column < 9; column++){
+            int numTotal = 0;
+            for(int row = 0; row < 9; row++){
+                numTotal += mySudoku[row][column].getVal();
+            }
+            if(numTotal != 45){
+                return false;
+            }
+        }
+        System.out.println("Columns add up");
+        //check each box, check adds to 45
+        //for each box row
+        for(int boxRow = 0; boxRow < 3; boxRow++){
+            //for each box column
+            for(int boxColumn = 0; boxColumn < 3; boxColumn++){
+                int numTotal = 0;
+                //for each row in the small box
+                for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                    //for each column in the small box
+                    for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                        numTotal += mySudoku[row2][column2].getVal();
+                    }
+                }
+                if(numTotal != 45){
                     return false;
                 }
-            }
-        }  
+            }          
+        }
+        System.out.println("Boxes add up");
         return true;
+    }
+
+    //check how many boxes remain unsolved
+    public static int numUnsolved(sudokCell[][] mySudoku){
+        int numUnsolved = 81;
+        //for each solved cell in main array
+        for(int row = 0; row < 9; row++){
+            for(int column = 0; column < 9; column++){
+                //if that element is solved
+                if(mySudoku[row][column].getSolved()){
+                    numUnsolved--;
+                }
+            }
+        }
+        return numUnsolved;
+    }
+
+
+    //gives sudoku from list of possibles
+    public static int[][] input(int x){
+        if(x == 1){
+            int[][] beginner =     {{-1, -1, 5, 8, 2, -1, -1, 1, 4},
+                                    {3, 1, -1, 9, -1, 4, 5, -1, -1},
+                                    {-1, 4, 2, -1, 3, -1, 9, 6, 8},
+
+                                    {6, 3, -1, -1, -1, -1, 7, 4, 5},
+                                    {1, 2, -1, 4, 5, -1, -1, 8, 9},
+                                    {8, 5, -1, -1, -1, -1, -1, 3, 2},
+
+                                    {-1, -1, 6, 3, 7, 2, -1, 5, -1},
+                                    {-1, 8, 1, 6, -1, 9, 2, 7, -1},
+                                    {2, 7, 3, 1, -1, -1, -1, 9, 6}};
+            return beginner;
+        }
+        if(x == 2){
+            int[][] normal = {{0, 0, 0, 0, 9, 0, 0, 0, 0},
+            {0, 9, 0, 0, 0, 0, 0, 4, 0},
+            {0, 5, 1, 8, 0, 7, 0, 0, 0},
+
+            {0, 8, 7, 9, 0, 0, 0, 2, 0},
+            {4, 0, 0, 3, 0, 0, 0, 0, 7},
+            {9, 1, 0, 4, 0, 0, 3, 6, 8},
+            
+            {1, 0, 2, 0, 0, 4, 0, 7, 5},
+            {0, 4, 0, 0, 0, 0, 2, 0, 0},
+            {7, 0, 0, 0, 5, 0, 0, 8, 0}};
+            return normal;
+        }
+        if(x == 3){
+            int[][] hard = {{0, 8, 0, 0, 0, 0, 0, 4, 0},
+                {2, 0, 0, 8, 0, 0, 5, 0, 7},
+                {0, 0, 4, 7, 0, 0, 0, 0, 0},
+                {0, 0, 0, 3, 0, 0, 0, 7, 1},
+                {0, 0, 8, 0, 0, 6, 0, 0, 3},
+                {7, 0, 0, 0, 0, 1, 0, 0, 4},
+                {8, 0, 0, 0, 9, 2, 0, 0, 6},
+                {6, 0, 2, 0, 0, 0, 7, 0, 0},
+                {1, 0, 0, 0, 0, 0, 3, 9, 0}};
+            return hard;
+        }
+        if(x == 4){
+            int[][] expert =   {{0, 0, 7, 0, 0, 0, 6, 3, 0},
+                    {6, 0, 0, 5, 0, 3, 0, 0, 9},
+                    {8, 0, 0, 0, 7, 0, 0, 0, 0},
+                    {0, 0, 0, 9, 0, 0, 0, 0, 3},
+                    {0, 0, 0, 0, 0, 0, 8, 5, 4},
+                    {0, 0, 0, 8, 0, 0, 0, 0, 0},
+                    {7, 6, 0, 0, 0, 1, 0, 0, 0},
+                    {5, 0, 0, 0, 0, 7, 0, 0, 6},
+                    {0, 4, 1, 0, 9, 0, 0, 0, 5}};
+            return expert;
+        }
+        int[][] other = new int[9][9];
+        return other;
     }
 }
 
@@ -314,6 +446,16 @@ int[][] normal = {{0, 0, 0, 0, 9, 0, 0, 0, 0},
             {0, 4, 0, 0, 0, 0, 2, 0, 0},
             {7, 0, 0, 0, 5, 0, 0, 8, 0}}
 
+int[][] hard = {{0, 8, 0, 0, 0, 0, 0, 4, 0},
+                {2, 0, 0, 8, 0, 0, 5, 0, 7},
+                {0, 0, 4, 7, 0, 0, 0, 0, 0},
+                {0, 0, 0, 3, 0, 0, 0, 7, 1},
+                {0, 0, 8, 0, 0, 6, 0, 0, 3},
+                {7, 0, 0, 0, 0, 1, 0, 0, 4},
+                {8, 0, 0, 0, 9, 2, 0, 0, 6},
+                {6, 0, 2, 0, 0, 0, 7, 0, 0},
+                {1, 0, 0, 0, 0, 0, 3, 9, 0}}
+
 int[][] expert =   {{0, 0, 7, 0, 0, 0, 6, 3, 0},
                     {6, 0, 0, 5, 0, 3, 0, 0, 9},
                     {8, 0, 0, 0, 7, 0, 0, 0, 0},
@@ -324,7 +466,7 @@ int[][] expert =   {{0, 0, 7, 0, 0, 0, 6, 3, 0},
                     {5, 0, 0, 0, 0, 7, 0, 0, 6},
                     {0, 4, 1, 0, 9, 0, 0, 0, 5}}
                                 
-idea for rook and box 3x3 checker - get all nums within that section, remove from possibles. Maybe do on first pass through 
+efficiency idea for rook and box 3x3 checker - get all nums within that section, remove from possibles. Maybe do on first pass through 
 
 
 

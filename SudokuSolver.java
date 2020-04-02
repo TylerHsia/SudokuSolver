@@ -104,10 +104,10 @@ public class SudokuSolver{
         for(int row = 0; row < 9; row++){
             for(int column = 0; column < 9; column++){
                 if(includeCandidates){
-                    System.out.print(mySudoku[row][column].toStringWithCands());
+                    System.out.print(mySudoku[row][column]);
                 }
                 else{
-                    System.out.print(mySudoku[row][column]);
+                    System.out.print(mySudoku[row][column].toStringWithoutCands());
                 }
             }
             System.out.println();
