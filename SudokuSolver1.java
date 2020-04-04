@@ -32,14 +32,14 @@ public class SudokuSolver1{
             System.out.println("More work to do!");
         }
         System.out.println("Num unsolved is " + numUnsolved(mySudoku));
-
+        /*
         bruteForceSolver(mySudoku);
         
         System.out.println();
         printBoard(mySudoku, true);        
         System.out.println();
         printBoard(mySudoku, false);
-        
+        */
     }
     
     //solve method
@@ -49,7 +49,8 @@ public class SudokuSolver1{
             boxChecker(mySudoku);
             onlyCandidateLeftRookChecker(mySudoku);    
             onlyCandidateLeftBoxChecker(mySudoku);
-            //candidatePairRookChecker(mySudoku);
+            candidatePairRookChecker(mySudoku);
+            candidatePairBoxChecker(mySudoku);
             System.out.println("HeHe");
         }
     }
@@ -207,6 +208,8 @@ public class SudokuSolver1{
         return onlyCandidateLeftRookCheckerWorks;
     }
 
+ 
+
     //check if candidate is only candidate in one spot in a box
     public static boolean onlyCandidateLeftBoxChecker(sudokCell[][] mySudoku){
         boolean onlyCandidateLeftBoxCheckerWorks = false;
@@ -223,7 +226,7 @@ public class SudokuSolver1{
                     for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
                         //for each column in the small box
                         for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
-                            //if the other element is not solved
+                            //if the element is not solved
                             if(!mySudoku[row2][column2].getSolved()){
                                 //if it contains i
                                 if(mySudoku[row2][column2].contains(i)){
@@ -250,7 +253,7 @@ public class SudokuSolver1{
 
     //checks for 2 boxes that have only 2 candidates in a column or row, eliminates those candidates from that column OR row 
     public static boolean candidatePairRookChecker(sudokCell[][] mySudoku){
-        boolean candidatePairBoxCheckerWorks = false;
+        boolean candidatePairRookCheckerWorks = false;
         //two for loops to go through each element in mySudoku
         for(int row = 0; row < 9; row++){
             for(int column = 0; column < 9; column++){
@@ -279,9 +282,9 @@ public class SudokuSolver1{
                                 }
                             }
                         }
-                        candidatePairBoxCheckerWorks = true;
-                        candidatePairBoxCheckerWorks = rookChecker(mySudoku);
-                        candidatePairBoxCheckerWorks = boxChecker(mySudoku);
+                        candidatePairRookCheckerWorks = true;
+                        candidatePairRookCheckerWorks = rookChecker(mySudoku);
+                        candidatePairRookCheckerWorks = boxChecker(mySudoku);
                     }
 
 
@@ -307,19 +310,78 @@ public class SudokuSolver1{
                                 }
                             }
                         }
+                        candidatePairRookCheckerWorks = true;
+                        candidatePairRookCheckerWorks = rookChecker(mySudoku);
+                        candidatePairRookCheckerWorks = boxChecker(mySudoku);
+                    }    
+                }
+            }
+        }      
+        return candidatePairRookCheckerWorks;
+    }
+
+    //checks for 2 boxes that have only 2 candidates in a box, eliminates those candidates from that box 
+    public static boolean candidatePairBoxChecker(sudokCell[][] mySudoku){
+        boolean candidatePairBoxCheckerWorks = false;
+        //two for loops to go through each element in mySudoku
+        for(int row = 0; row < 9; row++){
+            for(int column = 0; column < 9; column++){
+                //if that element is unsolved 
+                if(!mySudoku[row][column].getSolved()){
+                    int numSame = 0;
+                    ArrayList<Integer> rowVals = new ArrayList<Integer>();
+                    ArrayList<Integer> columnVals = new ArrayList<Integer>();
+
+                    int boxRow = row / 3;
+                    int boxColumn = column / 3;
+                    
+                            
+                    //for each row in the small box
+                    for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                        //for each column in the small box
+                        for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                            //if the element is not solved
+                            if(!mySudoku[row2][column2].getSolved()){
+                                //if it has same possibles
+                                if(mySudoku[row2][column2].samePossible(mySudoku[row][column])){
+                                    numSame++;
+                                    rowVals.add(row2);
+                                    columnVals.add(column2);
+                                }
+                            }
+                        }
+                    }
+
+                    //if the number of cells with same possibles equals number of possibles per cell
+                    if(numSame == mySudoku[row][column].size()){
+                        System.out.println("Num Was same for Box Checker");
+                        //for each other element in that box
+                        //for each row in the small box
+                        for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                            //for each column in the small box
+                            for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                                //if the box was not one of the ones that had same pair
+                                if(!columnVals.contains(column2) || !rowVals.contains(row2)){
+                                    System.out.println("Cell being checked was outside");
+                                    for(int possibleIndex = 0; possibleIndex < mySudoku[row][column].size(); possibleIndex++){
+                                        //if the other cell contains that possibility
+                                        if(mySudoku[row2][column2].contains(mySudoku[row][column].getVal(possibleIndex))){
+                                            //remove that possibility from the other cell
+                                            mySudoku[row2][column2].remove(mySudoku[row2][column2].indexOf(mySudoku[row][column].getVal(possibleIndex)));
+                                            System.out.println("Pair box checker removed a candidate");
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         candidatePairBoxCheckerWorks = true;
                         candidatePairBoxCheckerWorks = rookChecker(mySudoku);
                         candidatePairBoxCheckerWorks = boxChecker(mySudoku);
                     }    
                 }
-            }
-        }      
+            }            
+        }
         return candidatePairBoxCheckerWorks;
-    }
-
-    //checks for 2 boxes that have only 2 candidates in a box, eliminates those candidates from that box 
-    public static boolean candidatePairBoxChecker(sudokCell[][] mySudoku){
-        return false;
     }
 
     
@@ -518,7 +580,7 @@ public class SudokuSolver1{
             int[][] fiveStar = {{0, 5, 0, 0, 1, 3, 0, 0, 0},
                                 {0, 0, 1, 0, 8, 0, 3, 0, 0},
                                 {8, 0, 0, 5, 0, 0, 0, 6, 4},
-                                {5, 0, 7, 0, 3, 0, 0, 9, 0},
+                                {5, 0, 7, 0, 3, 0, 0, 0, 0},
                                 {0, 4, 0, 0, 5, 0, 0, 2, 0},
                                 {0, 0, 0, 0, 2, 0, 8, 0, 5},
                                 {1, 6, 0, 0, 0, 9, 0, 0, 8},
