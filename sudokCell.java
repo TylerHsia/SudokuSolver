@@ -1,5 +1,7 @@
 import java.util.*;
 
+//import org.graalvm.compiler.graph.Node.Successor;
+
 //cell object
 public class sudokCell{
     //constructors 
@@ -21,6 +23,15 @@ public class sudokCell{
         for(int i = 1; i <= 9; i++){
             possibles.add(i);
         }
+    }
+    public sudokCell(sudokCell obj){
+        this(obj.getPossibles(), obj.getSolved());
+    }
+    public sudokCell(ArrayList<Integer> possibles, boolean solved){
+        for(int i = 0; i < possibles.size(); i++){
+            this.possibles.add(possibles.get(i));
+        }
+        this.solved = solved;
     }
 
     public int indexOf(int val){
@@ -111,5 +122,21 @@ public class sudokCell{
             return -1;
         }
     }
+
+    public int getVal(int index){
+        return possibles.get(index);
+    }
+
+    public ArrayList<Integer> getPossibles(){
+        return possibles;
+    }
+    public ArrayList<Integer> getPossibles(sudokCell obj){
+        return obj.getPossibles();
+    }
+
+    public int size(){
+        return possibles.size();
+    }
      
+
 }

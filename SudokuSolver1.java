@@ -6,7 +6,7 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(4);
+        int[][] sudokuInputted = input(6);
 
         sudokCell[][] mySudoku = new sudokCell[9][9];
 
@@ -19,15 +19,8 @@ public class SudokuSolver1{
         printBoard(mySudoku, true); //boolean of whether to include candidates
         printBoard(mySudoku, false);
 
-        boolean checkerMethodWorks = true;
-        for(int i = 0; i < 10; i++){
-            checkerMethodWorks = rookChecker(mySudoku);
-            boxChecker(mySudoku);
-            onlyCandidateLeftRookChecker(mySudoku);    
-            onlyCandidateLeftBoxChecker(mySudoku);
-            System.out.println("HeHe");
-
-        }
+        solve(mySudoku);
+        
         System.out.println();
         printBoard(mySudoku, true);        
         System.out.println();
@@ -40,7 +33,25 @@ public class SudokuSolver1{
         }
         System.out.println("Num unsolved is " + numUnsolved(mySudoku));
 
+        bruteForceSolver(mySudoku);
         
+        System.out.println();
+        printBoard(mySudoku, true);        
+        System.out.println();
+        printBoard(mySudoku, false);
+        
+    }
+    
+    //solve method
+    public static void solve(sudokCell[][] mySudoku){
+        for(int i = 0; i < 11; i++){
+            rookChecker(mySudoku);
+            boxChecker(mySudoku);
+            onlyCandidateLeftRookChecker(mySudoku);    
+            onlyCandidateLeftBoxChecker(mySudoku);
+            //candidatePairRookChecker(mySudoku);
+            System.out.println("HeHe");
+        }
     }
 
     //eliminates by rook method
@@ -68,6 +79,7 @@ public class SudokuSolver1{
                                 }
                                 checkerMethodOneWorks = true;
                                 checkerMethodOneWorks = rookChecker(mySudoku);
+                                checkerMethodOneWorks = boxChecker(mySudoku);
                             }
                         }
                     }
@@ -238,7 +250,71 @@ public class SudokuSolver1{
 
     //checks for 2 boxes that have only 2 candidates in a column or row, eliminates those candidates from that column OR row 
     public static boolean candidatePairRookChecker(sudokCell[][] mySudoku){
-        return false;
+        boolean candidatePairBoxCheckerWorks = false;
+        //two for loops to go through each element in mySudoku
+        for(int row = 0; row < 9; row++){
+            for(int column = 0; column < 9; column++){
+                //if that element is unsolved 
+                if(!mySudoku[row][column].getSolved()){
+                    //for each other element in the column
+                    int numSame = 0;
+                    ArrayList<Integer> rowVals = new ArrayList<Integer>();
+                    
+                    for(int row2 = 0; row2 < 9; row2++){
+                        //if the other element is not solved 
+                        if(mySudoku[row2][column].samePossible(mySudoku[row][column])){
+                            numSame++;
+                            rowVals.add(row2);
+                        }
+                    }
+                    //if the number of cells with same possibles equals number of possibles per cell
+                    if(numSame == mySudoku[row][column].size()){
+                        //for each other element in the column
+                        for(int row2 = 0; row2 < 9; row2++){
+                            if(!rowVals.contains(row2)){
+                                for(int possibleIndex = 0; possibleIndex < mySudoku[row][column].size(); possibleIndex++){
+                                    if(mySudoku[row2][column].indexOf(mySudoku[row][column].getVal(possibleIndex)) != -1){
+                                        mySudoku[row2][column].remove(mySudoku[row2][column].indexOf(mySudoku[row][column].getVal(possibleIndex)));
+                                    }
+                                }
+                            }
+                        }
+                        candidatePairBoxCheckerWorks = true;
+                        candidatePairBoxCheckerWorks = rookChecker(mySudoku);
+                        candidatePairBoxCheckerWorks = boxChecker(mySudoku);
+                    }
+
+
+                    //for each other element in the row
+                    ArrayList<Integer> columnVals = new ArrayList<Integer>();
+                    numSame = 0;
+                    for(int column2 = 0; column2 < 9; column2++){
+                        //if the other element is not solved 
+                        if(mySudoku[row][column2].samePossible(mySudoku[row][column2])){
+                            numSame++;
+                            columnVals.add(column2);
+                        }
+                    } 
+                    //if the number of cells with same possibles equals number of possibles per cell
+                    if(numSame == mySudoku[row][column].size()){
+                        //for each other element in that row
+                        for(int column2 = 0; column2 < 9; column2++){
+                            if(!columnVals.contains(column2)){
+                                for(int possibleIndex = 0; possibleIndex < mySudoku[row][column].size(); possibleIndex++){
+                                    if(mySudoku[row][column2].indexOf(mySudoku[row][column].getVal(possibleIndex)) != -1){
+                                        mySudoku[row][column2].remove(mySudoku[row][column2].indexOf(mySudoku[row][column].getVal(possibleIndex)));
+                                    }
+                                }
+                            }
+                        }
+                        candidatePairBoxCheckerWorks = true;
+                        candidatePairBoxCheckerWorks = rookChecker(mySudoku);
+                        candidatePairBoxCheckerWorks = boxChecker(mySudoku);
+                    }    
+                }
+            }
+        }      
+        return candidatePairBoxCheckerWorks;
     }
 
     //checks for 2 boxes that have only 2 candidates in a box, eliminates those candidates from that box 
@@ -250,7 +326,28 @@ public class SudokuSolver1{
 
     //brute force method
     public static void bruteForceSolver(sudokCell[][] mySudoku){
+        sudokCell[][] mySudoku2 = new sudokCell[9][9];
+        for(int row = 0; row < 9; row++){
+            for(int column = 0; column < 9; column++){
+                sudokCell x = mySudoku[row][column];
+                mySudoku2[row][column] = new sudokCell(x);
+            }
+        }
+        System.out.println("Clone is: ");
+        mySudoku2[0][0].solve(3);
+        printBoard(mySudoku2, false);
+    }
 
+    //make a copy of values
+    public static sudokCell[][] copy(sudokCell[][] mySudoku){
+        sudokCell[][] mySudoku2 = new sudokCell[9][9];
+        for(int row = 0; row < 9; row++){
+            for(int column = 0; column < 9; column++){
+                sudokCell x = mySudoku[row][column];
+                mySudoku2[row][column] = new sudokCell(x);
+            }
+        }
+        return mySudoku2;
     }
 
     //scanner input sudoku
@@ -405,6 +502,30 @@ public class SudokuSolver1{
                     {0, 4, 1, 0, 9, 0, 0, 0, 5}};
             return expert;
         }
+        if(x == 5){
+            int[][] expert2 = {{0, 9, 1, 0, 0, 0, 0, 0, 0},
+                                {4, 0, 0, 0, 9, 0, 0, 0, 0},
+                                {2, 0, 0, 0, 0, 7, 0, 0, 0},
+                                {9, 0, 0, 0, 0, 0, 0, 1, 0},
+                                {6, 0, 4, 0, 1, 0, 0, 9, 0},
+                                {0, 0, 0, 7, 8, 0, 0, 0, 4},
+                                {0, 0, 6, 0, 0, 0, 0, 8, 0},
+                                {0, 0, 0, 0, 2, 1, 0, 0, 7},
+                                {7, 0, 9, 4, 0, 5, 0, 0, 1}};
+            return expert2;
+        }
+        if(x == 6){
+            int[][] fiveStar = {{0, 5, 0, 0, 1, 3, 0, 0, 0},
+                                {0, 0, 1, 0, 8, 0, 3, 0, 0},
+                                {8, 0, 0, 5, 0, 0, 0, 6, 4},
+                                {5, 0, 7, 0, 3, 0, 0, 9, 0},
+                                {0, 4, 0, 0, 5, 0, 0, 2, 0},
+                                {0, 0, 0, 0, 2, 0, 8, 0, 5},
+                                {1, 6, 0, 0, 0, 9, 0, 0, 8},
+                                {0, 0, 9, 0, 7, 0, 2, 0, 0},
+                                {0, 0, 0, 8, 6, 0, 0, 4, 0}};
+            return fiveStar;
+        }
         int[][] other = new int[9][9];
         return other;
     }
@@ -465,6 +586,8 @@ int[][] expert =   {{0, 0, 7, 0, 0, 0, 6, 3, 0},
                     {7, 6, 0, 0, 0, 1, 0, 0, 0},
                     {5, 0, 0, 0, 0, 7, 0, 0, 6},
                     {0, 4, 1, 0, 9, 0, 0, 0, 5}}
+int 
+            
                                 
 efficiency idea for rook and box 3x3 checker - get all nums within that section, remove from possibles. Maybe do on first pass through 
 
