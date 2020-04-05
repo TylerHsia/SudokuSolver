@@ -354,7 +354,7 @@ public class SudokuSolver1{
 
                     //if the number of cells with same possibles equals number of possibles per cell
                     if(numSame == mySudoku[row][column].size()){
-                        System.out.println("Num Was same for Box Checker");
+                        
                         //for each other element in that box
                         //for each row in the small box
                         for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
@@ -362,13 +362,13 @@ public class SudokuSolver1{
                             for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
                                 //if the box was not one of the ones that had same pair
                                 if(!columnVals.contains(column2) || !rowVals.contains(row2)){
-                                    System.out.println("Cell being checked was outside");
+                                    
                                     for(int possibleIndex = 0; possibleIndex < mySudoku[row][column].size(); possibleIndex++){
                                         //if the other cell contains that possibility
                                         if(mySudoku[row2][column2].contains(mySudoku[row][column].getVal(possibleIndex))){
                                             //remove that possibility from the other cell
                                             mySudoku[row2][column2].remove(mySudoku[row2][column2].indexOf(mySudoku[row][column].getVal(possibleIndex)));
-                                            System.out.println("Pair box checker removed a candidate");
+                                            
                                         }
                                     }
                                 }
