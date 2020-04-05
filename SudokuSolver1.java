@@ -6,7 +6,7 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(1);
+        int[][] sudokuInputted = input(5);
 
         sudokCell[][] mySudoku = new sudokCell[9][9];
 
@@ -52,12 +52,14 @@ public class SudokuSolver1{
             onlyCandidateLeftBoxChecker(mySudoku);
             nakedCandidateRookChecker(mySudoku);
             nakedCandidateBoxChecker(mySudoku);
+            candidateLinesChecker(mySudoku);
             //System.out.println("HeHe");
         }
     }
 
     //checks all sudokus in data base for if solves
     public static void checkAll(){
+        boolean solvedAll = true;
         for(int i = 1; i <= 6; i++){
             //inputted sudoku
             int[][] sudokuInputted = input(i);
@@ -72,13 +74,16 @@ public class SudokuSolver1{
             }   
 
             solve(mySudoku);
-            if(solved(mySudoku, false)){
-                System.out.println("Solved " + i);
-            }
-            else{
+
+            //if unsolved
+            if(!solved(mySudoku, false)){
+                solvedAll = false;
                 System.out.println("More work on " + i);
                 System.out.println("Num unsolved is " + numUnsolved(mySudoku));
             }
+        }
+        if(solvedAll){
+            System.out.println("All solved");
         }
     }
 
@@ -424,6 +429,107 @@ public class SudokuSolver1{
     }
 
     //method for candidate lines (only place in a box where candidate must go is in a line, eliminate candidate from that line outside the box)
+    public static boolean candidateLinesChecker(sudokCell[][] mySudoku){
+        boolean candidateLinesCheckerWorks = false;
+        //for each big box
+        for(int boxRow = 0; boxRow < 3; boxRow++){
+            for(int boxColumn = 0; boxColumn < 3; boxColumn++){
+                //for each candidate
+                for(int i = 1; i <= 9; i++){
+                    ArrayList<Integer> rowVals = new ArrayList<Integer>();
+                    ArrayList<Integer> columnVals = new ArrayList<Integer>();
+                    int numHasCandidate = 0;
+                    boolean removedACandidate = false;
+
+                    //for each row in the small box
+                    for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                        //for each column in the small box
+                        for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                            //if the element is not solved
+                            if(!mySudoku[row2][column2].getSolved()){  
+                                //if it contains the candidate integer
+                                if(mySudoku[row2][column2].contains(i)){
+                                    numHasCandidate++;
+                                    rowVals.add(row2);
+                                    columnVals.add(column2);
+                                }
+                            }
+                        }
+                    }
+                    //if number of cells that has that candidate in a box is 3 or lower
+                    if(numHasCandidate <= 3){
+                        //if all in same row
+                        boolean allInSameRow = false;
+                        //if 2 in same row
+                        if(rowVals.size() == 2){
+                            if(rowVals.get(0) == rowVals.get(1)){
+                                allInSameRow = true;
+                            }
+                        }
+                        //if 3 in same row
+                        if(rowVals.size() == 3){
+                            if(rowVals.get(0) == rowVals.get(1) && rowVals.get(1) == rowVals.get(2)){
+                                allInSameRow = true;
+                            }
+                        }
+                        if(allInSameRow){
+                            //eliminate values along that row
+                            for(int column2 = 0; column2 < 9; column2++){   
+                                //if outside of the box (not one of the previously selected)
+                                if(!columnVals.contains(column2)){
+                                    //if it contains the candidate
+                                    if(mySudoku[rowVals.get(0)][column2].contains(i)){
+                                        //remove that candidate
+                                        mySudoku[rowVals.get(0)][column2].remove(mySudoku[rowVals.get(0)][column2].indexOf(i));
+                                        removedACandidate = true;
+                                    }
+                                }
+                            }
+                        }
+
+
+
+                        //if all in same column
+                        boolean allInSameColumn = false;
+                        //if 2 in same column
+                        if(columnVals.size() == 2){
+                            if(columnVals.get(0) == columnVals.get(1)){
+                                allInSameColumn = true;
+                            }
+                        }
+                        //if 3 in same column
+                        if(columnVals.size() == 3){
+                            if(columnVals.get(0) == columnVals.get(1) && columnVals.get(1) == columnVals.get(2)){
+                                allInSameColumn = true;
+                            }
+                        }
+                        if(allInSameColumn){
+                            //eliminate values along that column
+                            for(int row2 = 0; row2 < 9; row2++){   
+                                //if outside of the box (not one of the previously selected)
+                                if(!rowVals.contains(row2)){
+                                    //if it contains the candidate
+                                    if(mySudoku[row2][columnVals.get(0)].contains(i)){
+                                        //remove that candidate
+                                        mySudoku[row2][columnVals.get(0)].remove(mySudoku[row2][columnVals.get(0)].indexOf(i));
+                                        removedACandidate = true;
+                                    }
+                                }
+                            }
+                        }
+                        //if a candidate was removed, run through box and rook checker
+                        if(removedACandidate){
+                            candidateLinesCheckerWorks = true; 
+                            candidateLinesCheckerWorks = boxChecker(mySudoku);
+                            candidateLinesCheckerWorks = rookChecker(mySudoku);
+                        }
+                    }
+                }
+            }
+        }  
+        return candidateLinesCheckerWorks;
+    }
+
     //multiple lines method (candidates can only be in the same 2 lines across 2 boxes, can't be in those two lines for the third box)
     //swordfish method 
     //x wing method
@@ -598,14 +704,14 @@ public class SudokuSolver1{
         }
         if(x == 4){
             int[][] expert =   {{0, 0, 7, 0, 0, 0, 6, 3, 0},
-                    {6, 0, 0, 5, 0, 3, 0, 0, 9},
-                    {8, 0, 0, 0, 7, 0, 0, 0, 0},
-                    {0, 0, 0, 9, 0, 0, 0, 0, 3},
-                    {0, 0, 0, 0, 0, 0, 8, 5, 4},
-                    {0, 0, 0, 8, 0, 0, 0, 0, 0},
-                    {7, 6, 0, 0, 0, 1, 0, 0, 0},
-                    {5, 0, 0, 0, 0, 7, 0, 0, 6},
-                    {0, 4, 1, 0, 9, 0, 0, 0, 5}};
+                                {6, 0, 0, 5, 0, 3, 0, 0, 9},
+                                {8, 0, 0, 0, 7, 0, 0, 0, 0},
+                                {0, 0, 0, 9, 0, 0, 0, 0, 3},
+                                {0, 0, 0, 0, 0, 0, 8, 5, 4},
+                                {0, 0, 0, 8, 0, 0, 0, 0, 0},
+                                {7, 6, 0, 0, 0, 1, 0, 0, 0},
+                                {5, 0, 0, 0, 0, 7, 0, 0, 6},
+                                {0, 4, 1, 0, 9, 0, 0, 0, 5}};
             return expert;
         }
         if(x == 5){
