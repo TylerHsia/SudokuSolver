@@ -6,7 +6,7 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(6);
+        int[][] sudokuInputted = input(1);
 
         sudokCell[][] mySudoku = new sudokCell[9][9];
 
@@ -25,13 +25,14 @@ public class SudokuSolver1{
         printBoard(mySudoku, true);        
         System.out.println();
         printBoard(mySudoku, false);
-        if(solved(mySudoku)){
+        if(solved(mySudoku, true)){
             System.out.println("Solved it!");
         }
         else{
             System.out.println("More work to do!");
         }
         System.out.println("Num unsolved is " + numUnsolved(mySudoku));
+        checkAll();
         /*
         bruteForceSolver(mySudoku);
         
@@ -49,9 +50,35 @@ public class SudokuSolver1{
             boxChecker(mySudoku);
             onlyCandidateLeftRookChecker(mySudoku);    
             onlyCandidateLeftBoxChecker(mySudoku);
-            candidatePairRookChecker(mySudoku);
-            candidatePairBoxChecker(mySudoku);
-            System.out.println("HeHe");
+            nakedCandidateRookChecker(mySudoku);
+            nakedCandidateBoxChecker(mySudoku);
+            //System.out.println("HeHe");
+        }
+    }
+
+    //checks all sudokus in data base for if solves
+    public static void checkAll(){
+        for(int i = 1; i <= 6; i++){
+            //inputted sudoku
+            int[][] sudokuInputted = input(i);
+
+            sudokCell[][] mySudoku = new sudokCell[9][9];
+
+            //my sudoku to be worked with
+            for(int row = 0; row < 9; row++){
+                for(int column = 0; column < 9; column++){
+                    mySudoku[row][column] = new sudokCell(sudokuInputted[row][column]);
+                }
+            }   
+
+            solve(mySudoku);
+            if(solved(mySudoku, false)){
+                System.out.println("Solved " + i);
+            }
+            else{
+                System.out.println("More work on " + i);
+                System.out.println("Num unsolved is " + numUnsolved(mySudoku));
+            }
         }
     }
 
@@ -252,7 +279,7 @@ public class SudokuSolver1{
     }
 
     //checks for 2 boxes that have only 2 candidates in a column or row, eliminates those candidates from that column OR row 
-    public static boolean candidatePairRookChecker(sudokCell[][] mySudoku){
+    public static boolean nakedCandidateRookChecker(sudokCell[][] mySudoku){
         boolean candidatePairRookCheckerWorks = false;
         //two for loops to go through each element in mySudoku
         for(int row = 0; row < 9; row++){
@@ -321,7 +348,7 @@ public class SudokuSolver1{
     }
 
     //checks for 2 boxes that have only 2 candidates in a box, eliminates those candidates from that box 
-    public static boolean candidatePairBoxChecker(sudokCell[][] mySudoku){
+    public static boolean nakedCandidateBoxChecker(sudokCell[][] mySudoku){
         boolean candidatePairBoxCheckerWorks = false;
         //two for loops to go through each element in mySudoku
         for(int row = 0; row < 9; row++){
@@ -384,7 +411,24 @@ public class SudokuSolver1{
         return candidatePairBoxCheckerWorks;
     }
 
-    
+    //checks for hidden candidate sets and removes candidates from those rows/columns (rook)
+    public static boolean hiddenCandidateRookChecker(sudokCell[][] mySudoku){
+        boolean hiddenCandidateRookCheckerWorks = false;
+        return hiddenCandidateRookCheckerWorks;
+    }
+
+    //checks for hidden candidate sets and removes candidates from those boxes (box)
+    public static boolean hiddenCandidateBoxChecker(sudokCell[][] mySudoku){
+        boolean hiddenCandidateBoxCheckerWorks = false;
+        return hiddenCandidateBoxCheckerWorks;
+    }
+
+    //method for candidate lines (only place in a box where candidate must go is in a line, eliminate candidate from that line outside the box)
+    //multiple lines method (candidates can only be in the same 2 lines across 2 boxes, can't be in those two lines for the third box)
+    //swordfish method 
+    //x wing method
+    //xyz wing method
+
 
     //brute force method
     public static void bruteForceSolver(sudokCell[][] mySudoku){
@@ -449,7 +493,7 @@ public class SudokuSolver1{
     }
 
     //check if the sudoku is solved
-    public static boolean solved(sudokCell[][] mySudoku){
+    public static boolean solved(sudokCell[][] mySudoku, boolean printChecks){
         //two for loops to go through each row, check adds to 45
         for(int row = 0; row < 9; row++){
             int numTotal = 0;
@@ -460,7 +504,7 @@ public class SudokuSolver1{
                 return false;
             }
         }
-        System.out.println("Rows add up");        
+        if(printChecks) System.out.println("Rows add up");        
         //two for loops to go through each column, check adds to 45
         for(int column = 0; column < 9; column++){
             int numTotal = 0;
@@ -471,7 +515,7 @@ public class SudokuSolver1{
                 return false;
             }
         }
-        System.out.println("Columns add up");
+        if(printChecks) System.out.println("Columns add up");
         //check each box, check adds to 45
         //for each box row
         for(int boxRow = 0; boxRow < 3; boxRow++){
@@ -490,7 +534,7 @@ public class SudokuSolver1{
                 }
             }          
         }
-        System.out.println("Boxes add up");
+        if(printChecks) System.out.println("Boxes add up");
         return true;
     }
 
