@@ -6,7 +6,7 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(8);
+        int[][] sudokuInputted = input(9);
 
         sudokCell[][] mySudoku = new sudokCell[9][9];
 
@@ -45,7 +45,7 @@ public class SudokuSolver1{
     
     //solve method
     public static void solve(sudokCell[][] mySudoku){
-        for(int i = 0; i < 11; i++){
+        for(int i = 0; i < 10; i++){
             rookChecker(mySudoku);
             boxChecker(mySudoku);
             onlyCandidateLeftRookChecker(mySudoku);    
@@ -60,7 +60,7 @@ public class SudokuSolver1{
     //checks all sudokus in data base for if solves
     public static void checkAll(){
         boolean solvedAll = true;
-        for(int i = 1; i <= 6; i++){
+        for(int i = 1; i <= 9; i++){
             //inputted sudoku
             int[][] sudokuInputted = input(i);
 
@@ -727,7 +727,19 @@ public class SudokuSolver1{
         return numUnsolved;
     }
 
+    //converts int[] of integers length 9 into a 2d array 
+    public static int[][] twoDConverter(ArrayList<Integer> oneD){
+        int[][] twoD = new int[9][9];
+            for(int row = 0; row < 9; row++){
+                int oneDRow = oneD.get(row);
+                for(int column = 8; column >= 0/*(int)(11 - Math.log(oneD.get(row)))*/; column--){
+                    twoD[row][column] = oneDRow % 10;
+                    oneDRow = oneDRow / 10;
+                }
+            }
+        return twoD;
 
+    }   
     //gives sudoku from list of possibles
     public static int[][] input(int x){
         if(x == 1){
@@ -829,6 +841,20 @@ public class SudokuSolver1{
                                     {0, 1, 0, 0, 0, 8, 0, 0, 0},
                                     {0, 0, 0, 5, 2, 0, 0, 0, 4}};
             return fiveStar3;
+        }
+        if(x == 9){
+            ArrayList<Integer> onlineSudokuHard =   new ArrayList<Integer>();
+            onlineSudokuHard.add(204010);
+            onlineSudokuHard.add(174030000); 
+            onlineSudokuHard.add(180049);
+            onlineSudokuHard.add(40826);
+            onlineSudokuHard.add(60000050);
+            onlineSudokuHard.add(43060071);
+            onlineSudokuHard.add(400050000);
+            onlineSudokuHard.add(80410090);
+            onlineSudokuHard.add(90608030);
+
+            return twoDConverter(onlineSudokuHard);
         }
         int[][] other = new int[9][9];
         return other;
