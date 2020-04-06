@@ -137,6 +137,4 @@ public class sudokCell{
     public int size(){
         return possibles.size();
     }
-     
-
 }

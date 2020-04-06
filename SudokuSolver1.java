@@ -6,7 +6,7 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(5);
+        int[][] sudokuInputted = input(8);
 
         sudokCell[][] mySudoku = new sudokCell[9][9];
 
@@ -296,7 +296,7 @@ public class SudokuSolver1{
                     ArrayList<Integer> rowVals = new ArrayList<Integer>();
                     
                     for(int row2 = 0; row2 < 9; row2++){
-                        //if the other element is not solved 
+                        //if the other element has same candidates
                         if(mySudoku[row2][column].samePossible(mySudoku[row][column])){
                             numSame++;
                             rowVals.add(row2);
@@ -417,8 +417,75 @@ public class SudokuSolver1{
     }
 
     //checks for hidden candidate sets and removes candidates from those rows/columns (rook)
-    public static boolean hiddenCandidateRookChecker(sudokCell[][] mySudoku){
+    public static boolean hiddenCandidatePairRookChecker(sudokCell[][] mySudoku){
         boolean hiddenCandidateRookCheckerWorks = false;
+        //two for loops to go through each element in mySudoku
+        for(int row = 0; row < 9; row++){
+            for(int column = 0; column < 9; column++){
+                //if that element has more than 2 candidates
+                if(mySudoku[row][column].size() > 2){
+                    //make array list of the possibles of the element 
+                    ArrayList<Integer> candidates = new ArrayList<Integer>();
+                    for(int k = 0; k < mySudoku[row][column].size(); k++){
+                        candidates.add(mySudoku[row][column].getVal(0));
+                    }
+
+                    //for each other element in the column
+                    int numSame = 0;
+                    ArrayList<Integer> rowVals = new ArrayList<Integer>();
+                    
+                    for(int row2 = 0; row2 < 9; row2++){
+                        //if the other element is not solved 
+                        if(mySudoku[row2][column].samePossible(mySudoku[row][column])){
+                            numSame++;
+                            rowVals.add(row2);
+                        }
+                    }
+                    //if the number of cells with same possibles equals number of possibles per cell
+                    if(numSame == mySudoku[row][column].size()){
+                        //for each other element in the column
+                        for(int row2 = 0; row2 < 9; row2++){
+                            if(!rowVals.contains(row2)){
+                                for(int possibleIndex = 0; possibleIndex < mySudoku[row][column].size(); possibleIndex++){
+                                    if(mySudoku[row2][column].indexOf(mySudoku[row][column].getVal(possibleIndex)) != -1){
+                                        mySudoku[row2][column].remove(mySudoku[row2][column].indexOf(mySudoku[row][column].getVal(possibleIndex)));
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+
+
+                    //for each other element in the row
+                    ArrayList<Integer> columnVals = new ArrayList<Integer>();
+                    numSame = 0;
+                    for(int column2 = 0; column2 < 9; column2++){
+                        //if the other element is not solved 
+                        if(mySudoku[row][column2].samePossible(mySudoku[row][column2])){
+                            numSame++;
+                            columnVals.add(column2);
+                        }
+                    } 
+                    //if the number of cells with same possibles equals number of possibles per cell
+                    if(numSame == mySudoku[row][column].size()){
+                        //for each other element in that row
+                        for(int column2 = 0; column2 < 9; column2++){
+                            if(!columnVals.contains(column2)){
+                                for(int possibleIndex = 0; possibleIndex < mySudoku[row][column].size(); possibleIndex++){
+                                    if(mySudoku[row][column2].indexOf(mySudoku[row][column].getVal(possibleIndex)) != -1){
+                                        mySudoku[row][column2].remove(mySudoku[row][column2].indexOf(mySudoku[row][column].getVal(possibleIndex)));
+                                    }
+                                }
+                            }
+                        }
+                        // candidatePairRookCheckerWorks = true;
+                        // candidatePairRookCheckerWorks = rookChecker(mySudoku);
+                        // candidatePairRookCheckerWorks = boxChecker(mySudoku);
+                    }    
+                }
+            }
+        }      
         return hiddenCandidateRookCheckerWorks;
     }
 
@@ -532,6 +599,7 @@ public class SudokuSolver1{
 
     //multiple lines method (candidates can only be in the same 2 lines across 2 boxes, can't be in those two lines for the third box)
     //swordfish method 
+    //jellyfish method, swordfish with 4 lines
     //x wing method
     //xyz wing method
 
@@ -737,6 +805,30 @@ public class SudokuSolver1{
                                 {0, 0, 9, 0, 7, 0, 2, 0, 0},
                                 {0, 0, 0, 8, 6, 0, 0, 4, 0}};
             return fiveStar;
+        }
+        if(x == 7){
+            int[][] fiveStar2= {{0, 0, 6, 0, 0, 0, 0, 4, 0},
+                                {0, 0, 0, 0, 3, 0, 7, 1, 6},
+                                {3, 0, 0, 0, 7, 9, 8, 0, 0},
+                                {0, 0, 0, 0, 9, 0, 0, 0, 7},
+                                {0, 0, 5, 3, 4, 2, 1, 0, 0},
+                                {8, 0, 0, 0, 6, 0, 0, 0, 0},
+                                {0, 0, 3, 9, 5, 0, 0, 0, 4},
+                                {6, 9, 7, 0, 1, 0, 0, 0, 0},
+                                {0, 8, 0, 0, 0, 0, 3, 0, 0}};
+            return fiveStar2;
+        }
+        if(x == 8){
+            int[][] fiveStar3 =    {{8, 0, 0, 0, 5, 6, 0, 0, 0},
+                                    {0, 0, 0, 8, 0, 0, 0, 6, 0},
+                                    {9, 0, 0, 3, 4, 0, 1, 0, 0},
+                                    {6, 0, 0, 0, 3, 0, 0, 5, 0},
+                                    {1, 5, 0, 0, 8, 0, 0, 3, 9},
+                                    {0, 2, 0, 0, 9, 0, 0, 0, 7},
+                                    {0, 0, 8, 0, 6, 3, 0, 0, 5},
+                                    {0, 1, 0, 0, 0, 8, 0, 0, 0},
+                                    {0, 0, 0, 5, 2, 0, 0, 0, 4}};
+            return fiveStar3;
         }
         int[][] other = new int[9][9];
         return other;
