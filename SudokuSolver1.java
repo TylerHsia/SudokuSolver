@@ -6,7 +6,7 @@ public class SudokuSolver1{
     public static sudokCell[][] mySudoku = new sudokCell[9][9];
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(9);
+        int[][] sudokuInputted = input(10);
 
 
         //my sudoku to be worked with
@@ -32,6 +32,8 @@ public class SudokuSolver1{
         }
         System.out.println("Num unsolved is " + numUnsolved(mySudoku));
 
+        //commented brute force 
+        /*
         bruteForceSolver(mySudoku);
         if(solved(mySudoku, true)){
             System.out.println("Brute Forced It!");
@@ -44,7 +46,7 @@ public class SudokuSolver1{
         printBoard(mySudoku, true);        
         System.out.println();
         printBoard(mySudoku, false);
-
+        */
 
         checkAll();
     }
@@ -71,7 +73,7 @@ public class SudokuSolver1{
     //checks all sudokus in data base for if solves
     public static void checkAll(){
         boolean solvedAll = true;
-        for(int i = 1; i <= 9; i++){
+        for(int i = 1; i <= 10; i++){
             //inputted sudoku
             int[][] sudokuInputted = input(i);
 
@@ -471,7 +473,7 @@ public class SudokuSolver1{
                 hiddenCandidateCheckerWorks = boxChecker(mySudoku);
             }
         }
-        //check each column
+        //check each row
 
         //check each box 
                         // candidatePairRookCheckerWorks = true;
@@ -950,6 +952,34 @@ public class SudokuSolver1{
             onlineSudokuHard.add(90608030);
 
             return twoDConverter(onlineSudokuHard);
+        }
+        if(x == 10){
+            ArrayList<Integer> fiveStar4 = new ArrayList<Integer>();
+            fiveStar4.add(90008);
+            fiveStar4.add(41005000);
+            fiveStar4.add(60070300);
+            fiveStar4.add(602510000);
+            fiveStar4.add(403020501);
+            fiveStar4.add(37206);
+            fiveStar4.add(4050020);
+            fiveStar4.add(900130);
+            fiveStar4.add(500080000);
+
+            return twoDConverter(fiveStar4);
+        }
+        if(x == 11){
+           /* ArrayList<Integer> name =   new ArrayList<Integer>();
+            .add();
+            .add(); 
+            .add();
+            .add();
+            .add();
+            .add();
+            .add();
+            .add();
+            .add();*/
+
+          //  return twoDConverter(onlineSudokuHard);
         }
         int[][] other = new int[9][9];
         return other;
