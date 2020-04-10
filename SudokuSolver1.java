@@ -3,12 +3,11 @@
 import java.util.*;
 
 public class SudokuSolver1{
-
+    public static sudokCell[][] mySudoku = new sudokCell[9][9];
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(5);
+        int[][] sudokuInputted = input(9);
 
-        sudokCell[][] mySudoku = new sudokCell[9][9];
 
         //my sudoku to be worked with
         for(int row = 0; row < 9; row++){
@@ -19,7 +18,7 @@ public class SudokuSolver1{
         printBoard(mySudoku, true); //boolean of whether to include candidates
         printBoard(mySudoku, false);
 
-        solve(mySudoku);
+        solve(mySudoku, false);
         
         System.out.println();
         printBoard(mySudoku, true);        
@@ -51,7 +50,7 @@ public class SudokuSolver1{
     }
     
     //solve method
-    public static void solve(sudokCell[][] mySudoku){
+    public static void solve(sudokCell[][] mySudoku, boolean bruteForce){
         for(int i = 0; i < 10; i++){
             rookChecker(mySudoku);
             boxChecker(mySudoku);
@@ -63,6 +62,10 @@ public class SudokuSolver1{
             //hiddenCandidateChecker(mySudoku);
             //System.out.println("HeHe");
         }
+        /*if(bruteForce && !solved(mySudoku, false)){
+            System.out.println("multiple guesses");
+            bruteForceSolver(mySudoku);
+        }*/
     }
 
     //checks all sudokus in data base for if solves
@@ -81,7 +84,8 @@ public class SudokuSolver1{
                 }
             }   
 
-            solve(mySudoku);
+            solve(mySudoku, false);
+            //bruteForceSolver(mySudoku);
 
             //if unsolved
             if(!solved(mySudoku, false)){
@@ -626,40 +630,84 @@ public class SudokuSolver1{
 
     //brute force method
     public static void bruteForceSolver(sudokCell[][] mySudoku){
-        //while original sudoku is unsolved
-        int i = 1;
-        while(!solved(mySudoku, false)){
-            sudokCell[][] testCase = copy(mySudoku);
-            //find i unsolved cell and solve to be random of candidates 
-            boolean foundUnsolved = false;
-            int row = -1;
-            int column = 0;
-            int num = 0;
-            while(!foundUnsolved){
-                row++;
-                if(row == 9){
-                    row = 0;
-                    column++;
-                }
-                if(!testCase[row][column].getSolved()){
-                    num++;
-                    if(num == i){
-                        foundUnsolved = true;
+        //for each level guess
+        sudokCell[][] mySudoku2 = copy(mySudoku);
+        for(int k = 0; k < numUnsolved(mySudoku) && !solved(mySudoku, false); k++){
+            //while sudoku2 is unsolved
+            int infiniteLoop = 0;
+            int i = 1;
+            while(!solved(mySudoku2, false) && infiniteLoop < 100){
+                //infiniteLoop++;
+                sudokCell[][] testCase = copy(mySudoku2);
+                //find i unsolved cell and solve to be random of candidates 
+                boolean foundUnsolved = false;
+                int row = -1;
+                int column = 0;
+                int num = 0;
+                while(!foundUnsolved){
+                    row++;
+                    if(row == 9){
+                        row = 0;
+                        column++;
+                    }
+                    if(column == 9){
+                        row = 0;
+                        column = 0;
+                    }
+                    if(!testCase[row][column].getSolved()){
+                        num++;
+                        if(num == i){
+                            foundUnsolved = true;
+                        }
                     }
                 }
-            }
-            i++;
-
-            ArrayList<Integer> possibles = testCase[row][column].getPossibles();
-            int randomIndex = (int) (Math.random() * possibles.size());
-            testCase[row][column].solve(possibles.get(randomIndex));
-            solve(testCase);
-            if(solved(testCase, false)){
-                printBoard(testCase, false);
-                for(int roww = 0; roww < 9; roww++){
-                    for(int columnn = 0; columnn < 9; columnn++){
-                        mySudoku[roww][columnn] = testCase[roww][columnn];
+                i++;
+                ArrayList<Integer> possibles = testCase[row][column].getPossibles();
+                int randomIndex = (int) (Math.random() * possibles.size());
+                testCase[row][column].solve(possibles.get(randomIndex));
+                if(i > numUnsolved(testCase)){
+                    //System.out.println("i greater than num unsolved");
+                    //System.out.println("numUnsolved " + numUnsolved(testCase));
+                    i = 1;
+                    /*if(numUnsolved(testCase) != 0){
+                        solve(testCase, true);
+                    }*/
+                }
+                //if all cells solved but sudoku not solved
+                if(numUnsolved(testCase) == 0 && !solved(testCase, false)){
+                    //System.out.println("restarted brute force");
+                    bruteForceSolver(mySudoku);
+                }
+                
+                for(int j = 0; j < 10; j++){
+                    rookChecker(testCase);
+                    boxChecker(testCase);
+   /*                 onlyCandidateLeftRookChecker(mySudoku);    
+                    //onlyCandidateLeftBoxChecker(mySudoku);
+                    //nakedCandidateRookChecker(mySudoku);
+                    //nakedCandidateBoxChecker(mySudoku);
+                    //candidateLinesChecker(mySudoku);
+                    //hiddenCandidateChecker(mySudoku);
+                    //System.out.println("HeHe");*/
+                }
+                if(!solved(testCase, false)){
+                    //System.out.println("multiple guesses\n numunsolved " + numUnsolved(testCase));
+                    mySudoku2 = copy(testCase);
+                    infiniteLoop = 100;
+                }
+                //if the test case is properly solved, make sudoku equal testcase
+                if(solved(testCase, false)){
+                    printBoard(testCase, false);
+                    for(int roww = 0; roww < 9; roww++){
+                        for(int columnn = 0; columnn < 9; columnn++){
+                            mySudoku[roww][columnn] = testCase[roww][columnn];
+                        }
                     }
+                }
+                 //if all cells solved but sudoku not solved
+                 if(numUnsolved(testCase) == 0 && !solved(testCase, false)){
+                    //System.out.println("restarted brute force");
+                    bruteForceSolver(mySudoku);
                 }
             }
         }
