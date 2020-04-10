@@ -6,7 +6,7 @@ public class SudokuSolver1{
 
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(9);
+        int[][] sudokuInputted = input(5);
 
         sudokCell[][] mySudoku = new sudokCell[9][9];
 
@@ -32,15 +32,22 @@ public class SudokuSolver1{
             System.out.println("More work to do!");
         }
         System.out.println("Num unsolved is " + numUnsolved(mySudoku));
-        checkAll();
-        /*
+
         bruteForceSolver(mySudoku);
-        
+        if(solved(mySudoku, true)){
+            System.out.println("Brute Forced It!");
+        }
+        else{
+            System.out.println("Couldn't brute force");
+            System.out.println("Num unsolved is " + numUnsolved(mySudoku));
+        }
         System.out.println();
         printBoard(mySudoku, true);        
         System.out.println();
         printBoard(mySudoku, false);
-        */
+
+
+        checkAll();
     }
     
     //solve method
@@ -53,6 +60,7 @@ public class SudokuSolver1{
             nakedCandidateRookChecker(mySudoku);
             nakedCandidateBoxChecker(mySudoku);
             candidateLinesChecker(mySudoku);
+            //hiddenCandidateChecker(mySudoku);
             //System.out.println("HeHe");
         }
     }
@@ -416,83 +424,95 @@ public class SudokuSolver1{
         return candidatePairBoxCheckerWorks;
     }
 
-    //checks for hidden candidate sets and removes candidates from those rows/columns (rook)
-    public static boolean hiddenCandidatePairRookChecker(sudokCell[][] mySudoku){
-        boolean hiddenCandidateRookCheckerWorks = false;
-        //two for loops to go through each element in mySudoku
-        for(int row = 0; row < 9; row++){
-            for(int column = 0; column < 9; column++){
-                //if that element has more than 2 candidates
-                if(mySudoku[row][column].size() > 2){
-                    //make array list of the possibles of the element 
-                    ArrayList<Integer> candidates = new ArrayList<Integer>();
-                    for(int k = 0; k < mySudoku[row][column].size(); k++){
-                        candidates.add(mySudoku[row][column].getVal(0));
-                    }
+    //checks for hidden candidate sets and removes candidates from those 
+    public static boolean hiddenCandidateChecker(sudokCell[][] mySudoku){
+        boolean hiddenCandidateCheckerWorks = false;
+        ArrayList<Integer> hiddenCandidates = new ArrayList<Integer>();
 
-                    //for each other element in the column
-                    int numSame = 0;
-                    ArrayList<Integer> rowVals = new ArrayList<Integer>();
-                    
-                    for(int row2 = 0; row2 < 9; row2++){
-                        //if the other element is not solved 
-                        if(mySudoku[row2][column].samePossible(mySudoku[row][column])){
-                            numSame++;
-                            rowVals.add(row2);
-                        }
-                    }
-                    //if the number of cells with same possibles equals number of possibles per cell
-                    if(numSame == mySudoku[row][column].size()){
-                        //for each other element in the column
-                        for(int row2 = 0; row2 < 9; row2++){
-                            if(!rowVals.contains(row2)){
-                                for(int possibleIndex = 0; possibleIndex < mySudoku[row][column].size(); possibleIndex++){
-                                    if(mySudoku[row2][column].indexOf(mySudoku[row][column].getVal(possibleIndex)) != -1){
-                                        mySudoku[row2][column].remove(mySudoku[row2][column].indexOf(mySudoku[row][column].getVal(possibleIndex)));
+        //check each column
+        for(int column = 0; column < 9; column++){
+            ArrayList<sudokCell> candidateSet = new ArrayList<sudokCell>();
+            ArrayList<Integer> indexConverter = new ArrayList<Integer>();
+            for(int row = 0; row < 9; row++){
+                if(!mySudoku[row][column].getSolved()){
+                    candidateSet.add(mySudoku[row][column]);
+                    indexConverter.add(row);
+                }
+            }
+            hiddenCandidates = findHiddenCandidates(candidateSet);
+            //if there was a hidden candidate set
+            if(hiddenCandidates.size() > 1){
+                //convert hiddenCandidates to useful index 
+                for(int i = 0; i < hiddenCandidates.size(); i++){
+                    hiddenCandidates.set(i, indexConverter.get(i));
+                }
+                System.out.println(hiddenCandidates.get(1));
+                //among those indexes, remove each candidate that is not alike 
+                for(int i = 0; i < hiddenCandidates.size(); i++){
+                    //contains
+                    for(int k = 1; k <= 9; k++){
+                        if(mySudoku[hiddenCandidates.get(i)][column].contains(k)){
+                            for(int j = 0; j < hiddenCandidates.size(); j++){
+                                if(!mySudoku[hiddenCandidates.get(j)][column].contains(k)){
+                                    if(mySudoku[hiddenCandidates.get(i)][column].indexOf(k) != -1){
+                                        mySudoku[hiddenCandidates.get(i)][column].remove(mySudoku[hiddenCandidates.get(i)][column].indexOf(k));
                                     }
                                 }
                             }
                         }
-                        
                     }
+                }
+                hiddenCandidateCheckerWorks = true;
+                hiddenCandidateCheckerWorks = rookChecker(mySudoku);
+                hiddenCandidateCheckerWorks = boxChecker(mySudoku);
+            }
+        }
+        //check each column
 
-
-                    //for each other element in the row
-                    ArrayList<Integer> columnVals = new ArrayList<Integer>();
-                    numSame = 0;
-                    for(int column2 = 0; column2 < 9; column2++){
-                        //if the other element is not solved 
-                        if(mySudoku[row][column2].samePossible(mySudoku[row][column2])){
-                            numSame++;
-                            columnVals.add(column2);
-                        }
-                    } 
-                    //if the number of cells with same possibles equals number of possibles per cell
-                    if(numSame == mySudoku[row][column].size()){
-                        //for each other element in that row
-                        for(int column2 = 0; column2 < 9; column2++){
-                            if(!columnVals.contains(column2)){
-                                for(int possibleIndex = 0; possibleIndex < mySudoku[row][column].size(); possibleIndex++){
-                                    if(mySudoku[row][column2].indexOf(mySudoku[row][column].getVal(possibleIndex)) != -1){
-                                        mySudoku[row][column2].remove(mySudoku[row][column2].indexOf(mySudoku[row][column].getVal(possibleIndex)));
-                                    }
-                                }
-                            }
-                        }
+        //check each box 
                         // candidatePairRookCheckerWorks = true;
                         // candidatePairRookCheckerWorks = rookChecker(mySudoku);
                         // candidatePairRookCheckerWorks = boxChecker(mySudoku);
-                    }    
-                }
-            }
-        }      
-        return hiddenCandidateRookCheckerWorks;
+          
+        return hiddenCandidateCheckerWorks;
     }
 
-    //checks for hidden candidate sets and removes candidates from those boxes (box)
-    public static boolean hiddenCandidateBoxChecker(sudokCell[][] mySudoku){
-        boolean hiddenCandidateBoxCheckerWorks = false;
-        return hiddenCandidateBoxCheckerWorks;
+    //method for hiddenCandidateChecker, takes in array list, finds the hidden candidates, returns them in an arraylist
+    public static ArrayList<Integer> findHiddenCandidates(ArrayList<sudokCell> candidateSet){
+        ArrayList<Integer> hiddenCandidates = new ArrayList<Integer>();
+        ArrayList[] whereEach = new ArrayList[9];
+        for(int i = 0; i < 9; i++){
+            whereEach[i] = new ArrayList<Integer>();
+        }
+        //for each possible candidate
+        for(int i = 1; i <= 9; i++){
+            //for each sudok cell in the candidate set
+            for(int k = 0; k < candidateSet.size(); k++){
+                //if it contains the possible candidate, add that candidate to the whereEach arrayList at the index of that candidate minus one
+                if((candidateSet.get(k)).contains(i)){
+                    whereEach[i - 1].add(k);
+                }
+            }
+        }
+        //if there naked duplicates 
+        //for each element in whereEach
+        for(int i = 0; i < 9; i++){
+            ArrayList<Integer> indexOfNakedDuplicates = new ArrayList<Integer>();
+            int num = 0; 
+            //compare each element in whereEach to each other element
+            for(int k = 0; k < 9; k++){
+                if(whereEach[i].equals(whereEach[k])){
+                    num++;
+                    indexOfNakedDuplicates.add(k);
+                }
+            }
+            //if there is a valid pair
+            if(num == whereEach[indexOfNakedDuplicates.get(0)].size()){
+                //return an arrayList of integers of the indeces of that pair 
+                return indexOfNakedDuplicates;
+            }
+        }
+        return hiddenCandidates;
     }
 
     //method for candidate lines (only place in a box where candidate must go is in a line, eliminate candidate from that line outside the box)
@@ -606,16 +626,43 @@ public class SudokuSolver1{
 
     //brute force method
     public static void bruteForceSolver(sudokCell[][] mySudoku){
-        sudokCell[][] mySudoku2 = new sudokCell[9][9];
-        for(int row = 0; row < 9; row++){
-            for(int column = 0; column < 9; column++){
-                sudokCell x = mySudoku[row][column];
-                mySudoku2[row][column] = new sudokCell(x);
+        //while original sudoku is unsolved
+        int i = 1;
+        while(!solved(mySudoku, false)){
+            sudokCell[][] testCase = copy(mySudoku);
+            //find i unsolved cell and solve to be random of candidates 
+            boolean foundUnsolved = false;
+            int row = -1;
+            int column = 0;
+            int num = 0;
+            while(!foundUnsolved){
+                row++;
+                if(row == 9){
+                    row = 0;
+                    column++;
+                }
+                if(!testCase[row][column].getSolved()){
+                    num++;
+                    if(num == i){
+                        foundUnsolved = true;
+                    }
+                }
+            }
+            i++;
+
+            ArrayList<Integer> possibles = testCase[row][column].getPossibles();
+            int randomIndex = (int) (Math.random() * possibles.size());
+            testCase[row][column].solve(possibles.get(randomIndex));
+            solve(testCase);
+            if(solved(testCase, false)){
+                printBoard(testCase, false);
+                for(int roww = 0; roww < 9; roww++){
+                    for(int columnn = 0; columnn < 9; columnn++){
+                        mySudoku[roww][columnn] = testCase[roww][columnn];
+                    }
+                }
             }
         }
-        System.out.println("Clone is: ");
-        mySudoku2[0][0].solve(3);
-        printBoard(mySudoku2, false);
     }
 
     //make a copy of values
