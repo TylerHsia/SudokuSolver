@@ -482,6 +482,66 @@ public class SudokuSolver1{
         }
 
         //find in a column
+        //find in a row
+        for(int column = 0; column < 9; column++){
+            //for each candidate i
+            for(int i = 1; i <= 9; i++){
+                //num is number of appearances of that candidate
+                int num = 0;
+                int iRowCoord1 = -1;
+                int iRowCoord2 = -1;
+
+                for(int row = 0; row < 9; row++){
+                    //if that cell contains the candidate
+                    if(mySudoku[column][row].contains(i)){
+                        iRowCoord2 = iRowCoord1;
+                        iRowCoord1 = row;
+                        num++;
+                    }
+                }
+                //if 2 possibles for the first candidate
+                if(num == 2){
+                    //find second candidate
+                    for(int k = i + 1; k <= 9; k++){
+                        //num for second pair
+                        int numK = 0;
+                        int kRowCoord1 = -1;
+                        int kRowCoord2 = -1;
+                        for(int row = 0; row < 9; row++){
+                            //if that cell contains the candidate
+                            if(mySudoku[row][column].contains(k)){
+                                kRowCoord2 = kRowCoord1;
+                                kRowCoord1 = column;
+                                numK++;
+                            }
+                        }
+                        //if pair for second candidate
+                        if(numK == 2){
+                            //if coord of both pairs are same
+                            if(kRowCoord1 == iRowCoord1 && kRowCoord2 == iRowCoord2){
+                                //remove all other candidates from both cells
+                                for(int j = 1; j <= 9; j++){
+                                    //i and k should be the two candidates
+                                    if(j != i && j != k){
+                                        //removal
+                                        if(mySudoku[kRowCoord1][column].contains(j)){
+                                            mySudoku[kRowCoord1][column].remove(mySudoku[kRowCoord1][column].indexOf(j));
+                                            rookChecker(mySudoku);
+                                            boxChecker(mySudoku);
+                                        }
+                                        if(mySudoku[kRowCoord2][column].contains(j)){
+                                            mySudoku[kRowCoord2][column].remove(mySudoku[kRowCoord2][column].indexOf(j));
+                                            rookChecker(mySudoku);
+                                            boxChecker(mySudoku);
+                                        }
+                                    }  
+                                }
+                            }
+                        }
+                    }
+                }
+            }   
+        }
 
         //find in box
                       // candidatePairRookCheckerWorks = true;
