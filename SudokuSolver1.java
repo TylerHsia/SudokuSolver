@@ -6,7 +6,7 @@ public class SudokuSolver1{
     public static sudokCell[][] mySudoku = new sudokCell[9][9];
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(12);
+        int[][] sudokuInputted = input(9);
 
 
         //my sudoku to be worked with
@@ -71,7 +71,7 @@ public class SudokuSolver1{
     //checks all sudokus in data base for if solves
     public static void checkAll(){
         boolean solvedAll = true;
-        for(int i = 1; i <= 11; i++){
+        for(int i = 1; i <= 12; i++){ 
             //inputted sudoku
             int[][] sudokuInputted = input(i);
 
@@ -481,7 +481,7 @@ public class SudokuSolver1{
             }   
         }
 
-        //find in a row
+        //find in a column
         for(int column = 0; column < 9; column++){
             //for each candidate i
             for(int i = 1; i <= 9; i++){
@@ -492,7 +492,7 @@ public class SudokuSolver1{
 
                 for(int row = 0; row < 9; row++){
                     //if that cell contains the candidate
-                    if(mySudoku[column][row].contains(i)){
+                    if(mySudoku[row][column].contains(i)){
                         iRowCoord2 = iRowCoord1;
                         iRowCoord1 = row;
                         num++;
@@ -510,7 +510,7 @@ public class SudokuSolver1{
                             //if that cell contains the candidate
                             if(mySudoku[row][column].contains(k)){
                                 kRowCoord2 = kRowCoord1;
-                                kRowCoord1 = column;
+                                kRowCoord1 = row;
                                 numK++;
                             }
                         }
@@ -520,7 +520,7 @@ public class SudokuSolver1{
                             if(kRowCoord1 == iRowCoord1 && kRowCoord2 == iRowCoord2){
                                 //remove all other candidates from both cells
                                 for(int j = 1; j <= 9; j++){
-                                    //i and k should be the two candidates
+                                    //i and k should be the two candidates remaining
                                     if(j != i && j != k){
                                         //removal
                                         if(mySudoku[kRowCoord1][column].contains(j)){
@@ -560,7 +560,7 @@ public class SudokuSolver1{
                         //for each column in the small box
                         for(int column = boxColumn * 3; column < boxColumn * 3 + 3; column++){
                             //if that cell contains the candidate
-                            if(mySudoku[column][row].contains(i)){
+                            if(mySudoku[row][column].contains(i)){
                                 iRowCoord2 = iRowCoord1;
                                 iRowCoord1 = row;
                                 iColumnCoord2 = iColumnCoord1;
@@ -585,7 +585,7 @@ public class SudokuSolver1{
                                 //for each column in the small box
                                 for(int column = boxColumn * 3; column < boxColumn * 3 + 3; column++){
                                     //if that cell contains the candidate
-                                    if(mySudoku[column][row].contains(k)){
+                                    if(mySudoku[row][column].contains(k)){
                                         kRowCoord2 = iRowCoord1;
                                         kRowCoord1 = row;
                                         kColumnCoord2 = iColumnCoord1;
