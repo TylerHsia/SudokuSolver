@@ -33,7 +33,7 @@ public class SudokuSolver1{
         System.out.println("Num unsolved is " + numUnsolved(mySudoku));
 
         //commented brute force 
-        //*
+        /*
         bruteForceSolver(mySudoku);
         if(solved(mySudoku, false)){
             System.out.println("Brute Forced It!");
@@ -117,11 +117,7 @@ public class SudokuSolver1{
                             
                             //if not solved element has solved value 
                             if(index != -1){
-                                /*boolean toPrint = mySudoku[row2][column].remove(index);
-                                    //printBoard(mySudoku, true);
-                                if(toPrint){
-                                    printBoard(mySudoku, true);
-                                }*/
+                                mySudoku[row2][column].remove(index);
                                 checkerMethodOneWorks = true;
                                 checkerMethodOneWorks = rookChecker(mySudoku);
                                 checkerMethodOneWorks = boxChecker(mySudoku);
@@ -137,11 +133,8 @@ public class SudokuSolver1{
                             
                             //if not solved element has solved value 
                             if(index != -1){
-                                boolean toPrint = mySudoku[row][column2].remove(index);
-                                    //printBoard(mySudoku, true);
-                                if(toPrint){
-                                    printBoard(mySudoku, true);
-                                }
+                                mySudoku[row][column2].remove(index);
+                               
                                 checkerMethodOneWorks = true; 
                                 checkerMethodOneWorks = rookChecker(mySudoku);
                                 checkerMethodOneWorks = boxChecker(mySudoku);
@@ -176,11 +169,7 @@ public class SudokuSolver1{
                                 int index = mySudoku[row2][column2].indexOf(mySudoku[row][column].getVal());
 
                                 if(index != -1){
-                                    boolean toPrint = mySudoku[row2][column2].remove(index);
-                                        //printBoard(mySudoku, true);
-                                    if(toPrint){
-                                        printBoard(mySudoku, true);
-                                    }
+                                    mySudoku[row2][column2].remove(index);
                                     boxCheckerWorks = true; 
                                     boxCheckerWorks = boxChecker(mySudoku);
                                     boxCheckerWorks = rookChecker(mySudoku);
@@ -685,7 +674,7 @@ public class SudokuSolver1{
                 }
                 //if the test case is properly solved, make sudoku equal testcase
                 if(solved(testCase, false)){
-                    printBoard(testCase, false);
+                    //printBoard(testCase, false);
                     for(int roww = 0; roww < 9; roww++){
                         for(int columnn = 0; columnn < 9; columnn++){
                             mySudoku[roww][columnn] = testCase[roww][columnn];
