@@ -15,7 +15,7 @@ public class SudokuSolver1{
                 mySudoku[row][column] = new sudokCell(sudokuInputted[row][column]);
             }
         }                    
-        printBoard(mySudoku, true); //boolean of whether to include candidates
+        
         printBoard(mySudoku, false);
 
         solve(mySudoku, false);
