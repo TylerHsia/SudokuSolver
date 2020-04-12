@@ -6,7 +6,7 @@ public class SudokuSolver1{
     public static sudokCell[][] mySudoku = new sudokCell[9][9];
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(4);
+        int[][] sudokuInputted = input(20);
 
 
         //my sudoku to be worked with
@@ -72,7 +72,7 @@ public class SudokuSolver1{
     //checks all sudokus in data base for if solves
     public static void checkAll(){
         boolean solvedAll = true;
-        for(int i = 1; i <= 13; i++){ 
+        for(int i = 1; i <= 19; i++){ 
             //inputted sudoku
             int[][] sudokuInputted = input(i);
 
@@ -623,9 +623,6 @@ public class SudokuSolver1{
                 }
             }
         }
-                      // candidatePairRookCheckerWorks = true;
-                        // candidatePairRookCheckerWorks = rookChecker(mySudoku);
-                        // candidatePairRookCheckerWorks = boxChecker(mySudoku);
           
         return hiddenCandidatePairCheckerWorks;
     }
@@ -892,9 +889,10 @@ public class SudokuSolver1{
     //swordfish method 
     //jellyfish method, swordfish with 4 lines
     //x wing method
+    //xy wing method
     //xyz wing method
     //complex naked candidates (not obvious triples)
-
+    //better hidden candidate method
     //checker method for any wrong steps using brute force as checker 
 
     //brute force method
@@ -1274,6 +1272,179 @@ public class SudokuSolver1{
 
             return twoDConverter(expertSudokuPartiallySolved);
         }
+        if(x == 14){
+            ArrayList<Integer> outrageouslyEvilSudoku99 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku99.add(600000700);
+            outrageouslyEvilSudoku99.add(9003000);
+            outrageouslyEvilSudoku99.add(340080090);
+            outrageouslyEvilSudoku99.add(704000508);
+            outrageouslyEvilSudoku99.add(60950000);
+            outrageouslyEvilSudoku99.add(2100600);
+            outrageouslyEvilSudoku99.add(7);
+            outrageouslyEvilSudoku99.add(400500300);
+            outrageouslyEvilSudoku99.add(17000085);
+
+            return twoDConverter(outrageouslyEvilSudoku99);
+        }
+        if(x == 15){
+            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku98.add(490860);
+            outrageouslyEvilSudoku98.add(10000500);
+            outrageouslyEvilSudoku98.add(500000000);
+            outrageouslyEvilSudoku98.add(109807004);
+            outrageouslyEvilSudoku98.add(40600);
+            outrageouslyEvilSudoku98.add(5012000);
+            outrageouslyEvilSudoku98.add(20000090);
+            outrageouslyEvilSudoku98.add(906000200);
+            outrageouslyEvilSudoku98.add(83);
+
+            return twoDConverter(outrageouslyEvilSudoku98);
+        }
+        if(x == 16){
+            ArrayList<Integer> outrageouslyEvilSudoku97 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku97.add(200005060);
+            outrageouslyEvilSudoku97.add(4600800);
+            outrageouslyEvilSudoku97.add(30700000);
+            outrageouslyEvilSudoku97.add(98020);
+            outrageouslyEvilSudoku97.add(900001000);
+            outrageouslyEvilSudoku97.add(78000004);
+            outrageouslyEvilSudoku97.add(80040000);
+            outrageouslyEvilSudoku97.add(650);
+            outrageouslyEvilSudoku97.add(100000003);
+
+            return twoDConverter(outrageouslyEvilSudoku97);
+        }
+        if(x == 17){
+            ArrayList<Integer> outrageouslyEvilSudoku96 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku96.add(907100);
+            outrageouslyEvilSudoku96.add(70430050);
+            outrageouslyEvilSudoku96.add(301000000);
+            outrageouslyEvilSudoku96.add(14700000);
+            outrageouslyEvilSudoku96.add(70);
+            outrageouslyEvilSudoku96.add(96000000);
+            outrageouslyEvilSudoku96.add(80007);
+            outrageouslyEvilSudoku96.add(200003004);
+            outrageouslyEvilSudoku96.add(50000039);
+
+            return twoDConverter(outrageouslyEvilSudoku96);
+        }
+        if(x == 18){
+            ArrayList<Integer> outrageouslyEvilSudoku95 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku95.add(49200000);
+            outrageouslyEvilSudoku95.add(800010);
+            outrageouslyEvilSudoku95.add(3);
+            outrageouslyEvilSudoku95.add(203056000);
+            outrageouslyEvilSudoku95.add(400000000);
+            outrageouslyEvilSudoku95.add(900040051);
+            outrageouslyEvilSudoku95.add(80002000);
+            outrageouslyEvilSudoku95.add(500800);
+            outrageouslyEvilSudoku95.add(7300900);
+
+            return twoDConverter(outrageouslyEvilSudoku95);
+        }
+        if(x == 19){
+            ArrayList<Integer> outrageouslyEvilSudoku94 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku94.add(710860000);
+            outrageouslyEvilSudoku94.add(68074002);
+            outrageouslyEvilSudoku94.add(0);
+            outrageouslyEvilSudoku94.add(1000030);
+            outrageouslyEvilSudoku94.add(650000000);
+            outrageouslyEvilSudoku94.add(92000080);
+            outrageouslyEvilSudoku94.add(500700009);
+            outrageouslyEvilSudoku94.add(600010);
+            outrageouslyEvilSudoku94.add(300028);
+
+            return twoDConverter(outrageouslyEvilSudoku94);
+        }
+
+        if(x == 20){
+            ArrayList<Integer> blackBeltSudoku60 = new ArrayList<Integer>();
+            blackBeltSudoku60.add(400800);
+            blackBeltSudoku60.add(180700004);
+            blackBeltSudoku60.add(290003070);
+            blackBeltSudoku60.add(400000500);
+            blackBeltSudoku60.add(39070410);
+            blackBeltSudoku60.add(5000009);
+            blackBeltSudoku60.add(40500031);
+            blackBeltSudoku60.add(900001058);
+            blackBeltSudoku60.add(1008000);
+
+            return twoDConverter(blackBeltSudoku60);
+        }
+        /*
+        if(x == 17){
+            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+
+            return twoDConverter(outrageouslyEvilSudoku98);
+        }
+        if(x == 17){
+            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+
+            return twoDConverter(outrageouslyEvilSudoku98);
+        }
+        if(x == 17){
+            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+
+            return twoDConverter(outrageouslyEvilSudoku98);
+        }
+        if(x == 17){
+            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+
+            return twoDConverter(outrageouslyEvilSudoku98);
+        }
+        if(x == 17){
+            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+            outrageouslyEvilSudoku98.add();
+
+            return twoDConverter(outrageouslyEvilSudoku98);
+
+        }
+
+        */
         if(x == 12){
            /* ArrayList<Integer> name =   new ArrayList<Integer>();
             .add();
