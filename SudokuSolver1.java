@@ -6,7 +6,7 @@ public class SudokuSolver1{
     public static sudokCell[][] mySudoku = new sudokCell[9][9];
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(9);
+        int[][] sudokuInputted = input(4);
 
 
         //my sudoku to be worked with
@@ -60,6 +60,7 @@ public class SudokuSolver1{
             nakedCandidateBoxChecker(mySudoku);
             candidateLinesChecker(mySudoku);
             hiddenCandidatePairChecker(mySudoku);
+            pointingPairRookToBoxChecker(mySudoku);
             //System.out.println("HeHe");
         }
         /*if(bruteForce && !solved(mySudoku, false)){
@@ -71,7 +72,7 @@ public class SudokuSolver1{
     //checks all sudokus in data base for if solves
     public static void checkAll(){
         boolean solvedAll = true;
-        for(int i = 1; i <= 12; i++){ 
+        for(int i = 1; i <= 13; i++){ 
             //inputted sudoku
             int[][] sudokuInputted = input(i);
 
@@ -736,6 +737,157 @@ public class SudokuSolver1{
         return candidateLinesCheckerWorks;
     }
 
+    public static boolean pointingPairRookToBoxChecker(sudokCell[][] mySudoku){
+        boolean pointingPairRookToBoxWorks = false;
+        //check rows
+        for(int row = 0; row < 9; row++){
+            //for candidate i
+            for(int i = 1; i <= 9; i++){
+                int num = 0;
+                int columnCoord1 = -1;
+                int columnCoord2 = -1;
+                int columnCoord3 = -1;
+
+                for(int column = 0; column < 9; column++){
+                    if(mySudoku[row][column].contains(i)){
+                        columnCoord1 = columnCoord2;
+                        columnCoord2 = columnCoord3;
+                        columnCoord3 = column;
+                        num++;
+                    }
+                }
+                //if the number of cells in that line with that candidate is 3
+                if(num == 3){
+                    //if cells in the same box
+                    if(columnCoord1 / 3 == columnCoord2 / 3 && columnCoord2 / 3 == columnCoord3 / 3){
+                        //remove i from rest of box
+                        int boxRow = row / 3;
+                        int boxColumn = columnCoord1 / 3;
+                        //for each row in the small box
+                        for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                            //for each column in the small box
+                            for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                                //if none of the three 
+                                if(!(columnCoord1 == column2 && row == row2) && !(columnCoord2 == column2 && row == row2) && !(columnCoord3 == column2 && row == row2)){
+                                    if(!mySudoku[row2][column2].getSolved()){
+                                        //remove i
+                                        if(mySudoku[row2][column2].contains(i)){
+                                            mySudoku[row2][column2].remove(mySudoku[row2][column2].indexOf(i));
+                                            rookChecker(mySudoku);
+                                            boxChecker(mySudoku);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //if the number of cells in that line with that candidate is 2
+                if(num == 2){
+                    //if cells in the same box
+                    if(columnCoord2 / 3 == columnCoord3 / 3){
+                        //remove i from rest of box
+                        int boxRow = row / 3;
+                        int boxColumn = columnCoord2 / 3;
+                        //for each row in the small box
+                        for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                            //for each column in the small box
+                            for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                                //if none of the two
+                                if(!(columnCoord2 == column2 && row == row2) && !(columnCoord3 == column2 && row == row2)){
+                                    //if other cell is not solved
+                                    if(!mySudoku[row2][column2].getSolved()){
+                                        //remove i
+                                        if(mySudoku[row2][column2].contains(i)){
+                                            mySudoku[row2][column2].remove(mySudoku[row2][column2].indexOf(i));
+                                            rookChecker(mySudoku);
+                                            boxChecker(mySudoku);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //check columns
+        for(int column = 0; column < 9; column++){
+            //for candidate i
+            for(int i = 1; i <= 9; i++){
+                int num = 0;
+                int rowCoord1 = -1;
+                int rowCoord2 = -1;
+                int rowCoord3 = -1;
+
+                for(int row = 0; row < 9; row++){
+                    if(mySudoku[row][column].contains(i)){
+                        rowCoord1 = rowCoord2;
+                        rowCoord2 = rowCoord3;
+                        rowCoord3 = row;
+                        num++;
+                    }
+                }
+                //if the number of cells in that line with that candidate is 3
+                if(num == 3){
+                    //if cells in the same box
+                    if(rowCoord1 / 3 == rowCoord2 / 3 && rowCoord2 / 3 == rowCoord3 / 3){
+                        //remove i from rest of box
+                        int boxRow = rowCoord1 / 3;
+                        int boxColumn = column / 3;
+                        //for each row in the small box
+                        for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                            //for each column in the small box
+                            for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                                //if none of the three 
+                                if(!(rowCoord1 == row2 && column == column2) && !(rowCoord2 == row2 && column == column2) && !(rowCoord3 == row2 && column == column2)){
+                                    if(!mySudoku[row2][column2].getSolved()){
+                                        //remove i
+                                        if(mySudoku[row2][column2].contains(i)){
+                                            mySudoku[row2][column2].remove(mySudoku[row2][column2].indexOf(i));
+                                            rookChecker(mySudoku);
+                                            boxChecker(mySudoku);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //if the number of cells in that line with that candidate is 2
+                if(num == 2){
+                    //if cells in the same box
+                    if(rowCoord2 / 3 == rowCoord3 / 3){
+                        //remove i from rest of box
+                        int boxRow = rowCoord2 / 3;
+                        int boxColumn = column / 3;
+                        //for each row in the small box
+                        for(int row2 = boxRow * 3; row2 < boxRow * 3 + 3; row2++){
+                            //for each column in the small box
+                            for(int column2 = boxColumn * 3; column2 < boxColumn * 3 + 3; column2++){
+                                //if none of the two
+                                if(!(rowCoord2 == row2 && column == column2) && !(rowCoord3 == row2 && column == column2)){
+                                    //if other cell is not solved
+                                    if(!mySudoku[row2][column2].getSolved()){
+                                        //remove i
+                                        if(mySudoku[row2][column2].contains(i)){
+                                            mySudoku[row2][column2].remove(mySudoku[row2][column2].indexOf(i));
+                                            rookChecker(mySudoku);
+                                            boxChecker(mySudoku);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return pointingPairRookToBoxWorks;
+    }
     //multiple lines method (candidates can only be in the same 2 lines across 2 boxes, can't be in those two lines for the third box)
     //swordfish method 
     //jellyfish method, swordfish with 4 lines
@@ -1107,6 +1259,20 @@ public class SudokuSolver1{
             outrageouslyEvilSudoku100.add(6057);
 
             return twoDConverter(outrageouslyEvilSudoku100);
+        }
+        if(x == 13){
+            ArrayList<Integer> expertSudokuPartiallySolved = new ArrayList<Integer>();
+            expertSudokuPartiallySolved.add(3468159);
+            expertSudokuPartiallySolved.add(869715423);
+            expertSudokuPartiallySolved.add(154923608);
+            expertSudokuPartiallySolved.add(200096);
+            expertSudokuPartiallySolved.add(600800012);
+            expertSudokuPartiallySolved.add(600784);
+            expertSudokuPartiallySolved.add(376241);
+            expertSudokuPartiallySolved.add(194865);
+            expertSudokuPartiallySolved.add(416582937);
+
+            return twoDConverter(expertSudokuPartiallySolved);
         }
         if(x == 12){
            /* ArrayList<Integer> name =   new ArrayList<Integer>();

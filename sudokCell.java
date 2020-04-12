@@ -45,7 +45,7 @@ public class sudokCell{
         
 
 
-
+        
         possibles.remove(toRemove);
         if(possibles.size() == 1){
             solved = true;
