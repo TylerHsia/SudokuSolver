@@ -18,7 +18,7 @@ public class SudokuSolver1{
         
         printBoard(mySudoku, false);
 
-        solve(mySudoku, false);
+        solve(mySudoku, true);
         
         System.out.println();
         printBoard(mySudoku, true);        
@@ -50,7 +50,7 @@ public class SudokuSolver1{
     }
     
     //solve method
-    public static void solve(sudokCell[][] mySudoku, boolean bruteForce){
+    public static void solve(sudokCell[][] mySudoku, boolean forcingChains){
         for(int i = 0; i < 10; i++){
             rookChecker(mySudoku);
             boxChecker(mySudoku);
@@ -61,7 +61,15 @@ public class SudokuSolver1{
             candidateLinesChecker(mySudoku);
             hiddenCandidatePairChecker(mySudoku);
             pointingPairRookToBoxChecker(mySudoku);
+            
             //System.out.println("HeHe");
+        }
+        boolean forcingChainsCheckerWorks = false;
+        if(forcingChains){
+            forcingChainsCheckerWorks = forcingChainsChecker(mySudoku);
+        }
+        if(forcingChainsCheckerWorks){
+            solve(mySudoku, true);
         }
         /*if(bruteForce && !solved(mySudoku, false)){
             System.out.println("multiple guesses");
@@ -72,7 +80,7 @@ public class SudokuSolver1{
     //checks all sudokus in data base for if solves
     public static void checkAll(){
         boolean solvedAll = true;
-        for(int i = 1; i <= 19; i++){ 
+        for(int i = 1; i <= 21; i++){ 
             //inputted sudoku
             int[][] sudokuInputted = input(i);
 
@@ -85,7 +93,7 @@ public class SudokuSolver1{
                 }
             }   
 
-            solve(mySudoku, false);
+            solve(mySudoku, true);
             //bruteForceSolver(mySudoku);
 
             //if unsolved
@@ -885,6 +893,86 @@ public class SudokuSolver1{
 
         return pointingPairRookToBoxWorks;
     }
+
+    public static boolean forcingChainsChecker(sudokCell[][] mySudoku){
+        //System.out.println("I was called");
+        boolean forcingChainsCheckerWorks = false;
+        //for each unsolved cell
+        for(int row = 0; row < 9; row++){
+            for(int column = 0; column < 9; column++){
+                if(!mySudoku[row][column].getSolved()){
+                    //setup 
+                    int numCands = mySudoku[row][column].getPossibles().size();
+                    boolean[][] sameSolved = new boolean[9][9];
+                    for(int solvedRow = 0; solvedRow < 9; solvedRow++){
+                        for(int solvedColumn = 0; solvedColumn < 9; solvedColumn++){
+                            sameSolved[solvedRow][solvedColumn] = true;
+                            if(mySudoku[solvedRow][solvedColumn].getSolved()){
+                                sameSolved[solvedRow][solvedColumn] = false;
+                            }
+                        }
+                    }
+
+                    //first guess
+                    sudokCell[][] copy1 = copy(mySudoku);
+                    copy1[row][column].solve(mySudoku[row][column].getPossibles().get(0));
+                    solve(copy1, false);
+                    if(numUnsolved(copy1) == 0 && !solved(copy1, false)){
+                        mySudoku[row][column].remove(mySudoku[row][column].indexOf(mySudoku[row][column].getPossibles().get(0)));
+                        return true;
+                    }
+                    for(int row2 = 0; row2 < 9; row2++){
+                        for(int column2 = 0; column2 < 9; column2++){
+                            if(!copy1[row2][column2].getSolved()){
+                                sameSolved[row2][column2] = false;
+                            }
+                        }
+                    }
+
+
+                    //all other guesses 
+                    for(int candidateIndex = 1; candidateIndex < numCands; candidateIndex++){
+                        sudokCell[][] copy = copy(mySudoku);
+                        copy[row][column].solve(mySudoku[row][column].getPossibles().get(candidateIndex));
+                        solve(copy, false);
+                        if(numUnsolved(copy) == 0 && !solved(copy, false)){
+                            mySudoku[row][column].remove(mySudoku[row][column].indexOf(mySudoku[row][column].getPossibles().get(candidateIndex)));
+                            return true;
+                        }
+
+                        for(int row2 = 0; row2 < 9; row2++){
+                            for(int column2 = 0; column2 < 9; column2++){
+                                if(!mySudoku[row2][column2].getSolved()){
+                                    if(copy[row2][column2].getSolved()){
+                                        if(!copy[row2][column2].equals(copy1[row2][column2])){
+                                            sameSolved[row2][column2] = false;
+                                        }
+                                    }
+                                }
+                                if(!copy[row2][column2].getSolved()){
+                                    sameSolved[row2][column2] = false;
+                                }
+                            }
+                        }
+                    }
+                    for(int row2 = 0; row2 < 9; row2++){
+                        for(int column2 = 0; column2 < 9; column2++){
+                            if(!mySudoku[row2][column2].getSolved()){
+                                if(sameSolved[row2][column2]){
+                                    if(copy1[row2][column2].getSolved()){
+                                        mySudoku[row2][column2].solve(copy1[row2][column2].getVal());
+                                        forcingChainsCheckerWorks = true;
+                                        System.out.println("I did it");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return forcingChainsCheckerWorks;
+    }
     //multiple lines method (candidates can only be in the same 2 lines across 2 boxes, can't be in those two lines for the third box)
     //swordfish method 
     //jellyfish method, swordfish with 4 lines
@@ -894,8 +982,11 @@ public class SudokuSolver1{
     //complex naked candidates (not obvious triples)
     //better hidden candidate method
     //checker method for any wrong steps using brute force as checker 
+    //test how recursion works
 
     //brute force method
+
+
     public static void bruteForceSolver(sudokCell[][] mySudoku){
         //for each level guess
         sudokCell[][] mySudoku2 = copy(mySudoku);
@@ -1325,7 +1416,7 @@ public class SudokuSolver1{
             outrageouslyEvilSudoku96.add(80007);
             outrageouslyEvilSudoku96.add(200003004);
             outrageouslyEvilSudoku96.add(50000039);
-
+            //test
             return twoDConverter(outrageouslyEvilSudoku96);
         }
         if(x == 18){
@@ -1371,35 +1462,37 @@ public class SudokuSolver1{
 
             return twoDConverter(blackBeltSudoku60);
         }
+        
+        if(x == 21){
+            ArrayList<Integer> fiveStar6 = new ArrayList<Integer>();
+            fiveStar6.add(30008);
+            fiveStar6.add(3268004);
+            fiveStar6.add(6040010);
+            fiveStar6.add(100080032);
+            fiveStar6.add(20000040);
+            fiveStar6.add(340050007);
+            fiveStar6.add(60090200);
+            fiveStar6.add(400876300);
+            fiveStar6.add(900020000);
+
+            return twoDConverter(fiveStar6);
+        }
+        
+        if(x == 22){
+            ArrayList<Integer> blackBeltSudoku59 = new ArrayList<Integer>();
+            blackBeltSudoku59.add(800010054);
+            blackBeltSudoku59.add(700040600);
+            blackBeltSudoku59.add(200500000);
+            blackBeltSudoku59.add(1095);
+            blackBeltSudoku59.add(307000408);
+            blackBeltSudoku59.add(50400000);
+            blackBeltSudoku59.add(3002);
+            blackBeltSudoku59.add(1070009);
+            blackBeltSudoku59.add(920060007);
+
+            return twoDConverter(blackBeltSudoku59);
+        }
         /*
-        if(x == 17){
-            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-
-            return twoDConverter(outrageouslyEvilSudoku98);
-        }
-        if(x == 17){
-            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-
-            return twoDConverter(outrageouslyEvilSudoku98);
-        }
         if(x == 17){
             ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
             outrageouslyEvilSudoku98.add();
