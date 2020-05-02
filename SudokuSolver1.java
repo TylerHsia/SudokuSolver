@@ -6,7 +6,7 @@ public class SudokuSolver1{
     public static sudokCell[][] mySudoku = new sudokCell[9][9];
     public static void main(String[] args){
         //inputted sudoku
-        int[][] sudokuInputted = input(20);
+        int[][] sudokuInputted = input(23);
 
 
         //my sudoku to be worked with
@@ -80,7 +80,7 @@ public class SudokuSolver1{
     //checks all sudokus in data base for if solves
     public static void checkAll(){
         boolean solvedAll = true;
-        for(int i = 1; i <= 21; i++){ 
+        for(int i = 1; i <= 23; i++){ 
             //inputted sudoku
             int[][] sudokuInputted = input(i);
 
@@ -982,9 +982,6 @@ public class SudokuSolver1{
     //complex naked candidates (not obvious triples)
     //better hidden candidate method
     //checker method for any wrong steps using brute force as checker 
-    //test how recursion works
-
-    //brute force method
 
 
     public static void bruteForceSolver(sudokCell[][] mySudoku){
@@ -1492,35 +1489,37 @@ public class SudokuSolver1{
 
             return twoDConverter(blackBeltSudoku59);
         }
+        
+        if(x == 23){
+            ArrayList<Integer> telegraphHardestSudoku = new ArrayList<Integer>();
+            telegraphHardestSudoku.add(800000000);
+            telegraphHardestSudoku.add(3600000);
+            telegraphHardestSudoku.add(70090200);
+            telegraphHardestSudoku.add(50007000);
+            telegraphHardestSudoku.add(45700);
+            telegraphHardestSudoku.add(100030);
+            telegraphHardestSudoku.add(1000068);
+            telegraphHardestSudoku.add(8500010);
+            telegraphHardestSudoku.add(90000400);
+
+            return twoDConverter(telegraphHardestSudoku);
+        }
+        
+        if(x == 24){
+            ArrayList<Integer> crackingAToughClassic = new ArrayList<Integer>();
+            crackingAToughClassic.add(340001000);
+            crackingAToughClassic.add(20009000);
+            crackingAToughClassic.add(500070);
+            crackingAToughClassic.add(3107);
+            crackingAToughClassic.add(680000302);
+            crackingAToughClassic.add(60);
+            crackingAToughClassic.add(8074010);
+            crackingAToughClassic.add(0);
+            crackingAToughClassic.add(9000685);
+
+            return twoDConverter(crackingAToughClassic);
+        }
         /*
-        if(x == 17){
-            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-
-            return twoDConverter(outrageouslyEvilSudoku98);
-        }
-        if(x == 17){
-            ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-            outrageouslyEvilSudoku98.add();
-
-            return twoDConverter(outrageouslyEvilSudoku98);
-        }
         if(x == 17){
             ArrayList<Integer> outrageouslyEvilSudoku98 = new ArrayList<Integer>();
             outrageouslyEvilSudoku98.add();
